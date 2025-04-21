@@ -1,10 +1,11 @@
+
 const User = require("../models/User");
 const { generateToken } = require("../middleware/auth");
 
 // Register a new user
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password , role  } = req.body;
 
     // Check if user already exists
     let user = await User.findOne({ email });
@@ -17,6 +18,7 @@ exports.register = async (req, res) => {
       name,
       email,
       password,
+      role
     });
 
     await user.save();
