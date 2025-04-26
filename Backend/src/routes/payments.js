@@ -3,14 +3,14 @@ const router = express.Router();
 const paymentController = require("../controllers/paymentController");
 const { isAuthenticated } = require("../middleware/auth");
 
-// Create payment intent
+// Create payment order
 router.post(
-  "/create-payment-intent",
+  "/create-payment-order",
   isAuthenticated,
-  paymentController.createPaymentIntent
+  paymentController.createPaymentOrder
 );
 
-// Stripe webhook
+// Razorpay webhook
 router.post(
   "/webhook",
   express.raw({ type: "application/json" }),

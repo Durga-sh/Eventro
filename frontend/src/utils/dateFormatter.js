@@ -48,3 +48,5 @@ export const formatDateRange = (startDate, endDate) => {
   // Multiple day event
   return `${formatDate(startDate)} - ${formatDate(endDate)}`;
 };
+
+export default formatDate 

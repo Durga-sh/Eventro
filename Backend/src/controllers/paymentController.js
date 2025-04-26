@@ -1,10 +1,16 @@
-const stripe = require("stripe")(require("../config/config").STRIPE_SECRET_KEY);
+const Razorpay = require("razorpay");
 const Ticket = require("../models/Ticket");
 const Event = require("../models/Event");
 const { createTicket } = require("./ticketController");
+const crypto = require("crypto");
 
-// Create payment intent
-exports.createPaymentIntent = async (req, res) => {
+// const razorpay = new Razorpay({
+//   key_id: require("../config/config").RAZORPAY_KEY_ID,
+//   key_secret: require("../config/config").RAZORPAY_KEY_SECRET,
+// });
+
+// Create payment order
+exports.createPaymentOrder = async (req, res) => {
   try {
     const { eventId, ticketTypeId, quantity } = req.body;
 
@@ -31,42 +37,55 @@ exports.createPaymentIntent = async (req, res) => {
     }
 
     // Calculate amount
-    const amount = ticketType.price * quantity * 100; // Stripe requires amount in cents
+    const amount = ticketType.price * quantity * 100; // Razorpay requires amount in paise
 
-    // Create payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
+    // Create Razorpay order
+    const order = await razorpay.orders.create({
       amount,
-      currency: "usd",
-      metadata: {
+      currency: "INR",
+      receipt: `receipt_${eventId}_${Date.now()}`,
+      notes: {
         eventId,
         ticketTypeId,
-        quantity,
+        quantity: quantity.toString(),
         userId: req.user.id,
       },
     });
 
     res.json({
-      clientSecret: paymentIntent.client_secret,
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      key: require("../config/config").RAZORPAY_KEY_ID,
     });
   } catch (error) {
-    console.error("Create payment intent error:", error);
+    console.error("Create payment order error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
 // Process payment webhook
 exports.handleWebhook = async (req, res) => {
-  const sig = req.headers["stripe-signature"];
-  const webhookSecret = require("../config/config").STRIPE_WEBHOOK_SECRET;
-
   try {
-    const event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    const webhookSecret = require("../config/config").RAZORPAY_WEBHOOK_SECRET;
+    const signature = req.headers["x-razorpay-signature"];
 
-    // Handle the event
-    if (event.type === "payment_intent.succeeded") {
-      const paymentIntent = event.data.object;
-      const { eventId, ticketTypeId, quantity, userId } =
-        paymentIntent.metadata;
+    // Verify webhook signature
+    const expectedSignature = crypto
+      .createHmac("sha256", webhookSecret)
+      .update(JSON.stringify(req.body))
+      .digest("hex");
+
+    if (signature !== expectedSignature) {
+      return res.status(400).json({ message: "Invalid signature" });
+    }
+
+    const event = req.body;
+
+    // Handle payment success event
+    if (event.event === "payment.captured") {
+      const payment = event.payload.payment.entity;
+      const { eventId, ticketTypeId, quantity, userId } = payment.notes;
 
       // Create ticket
       await createTicket(
@@ -74,13 +93,13 @@ exports.handleWebhook = async (req, res) => {
         userId,
         ticketTypeId,
         parseInt(quantity),
-        paymentIntent.id
+        payment.id
       );
     }
 
-    res.json({ received: true });
+    res.json({ status: "ok" });
   } catch (error) {
     console.error("Webhook error:", error);
-    res.status(400).send(`Webhook Error: ${error.message}`);
+    res.status(400).json({ message: `Webhook Error: ${error.message}` });
   }
 };

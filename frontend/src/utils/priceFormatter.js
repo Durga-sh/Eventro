@@ -23,3 +23,6 @@ export const formatPriceWithoutSymbol = (price) => {
     maximumFractionDigits: 2,
   }).format(price);
 };
+
+
+export default formatPrice

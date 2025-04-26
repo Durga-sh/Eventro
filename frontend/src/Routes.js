@@ -6,11 +6,13 @@ import { useAuth } from "./hooks/useAuth";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
-import UserDashboardPage from "./pages/UserDashboardpage";
-import CreateEventPage from "./pages/createEventPage";
+import UserDashboardPage from "./pages/UserDashboardPage";
+import CreateEventPage from "./pages/CreateEventPage";
 import EventDetailsPage from "./pages/EventDetailsPage";
 import EditEventPage from "./pages/EditEventPage";
-
+import CheckoutPage from "./pages/CheckoutPage";
+import MyTicketsPage from "./pages/MyTicketsPage";
+import TicketDetailPage from "./pages/TicketDetailPage";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -56,9 +58,30 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-    
-    
-      {/* Add other routes here */}
+      <Route
+        path="/checkout"
+        element={
+          <ProtectedRoute>
+            <CheckoutPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-tickets"
+        element={
+          <ProtectedRoute>
+            <MyTicketsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/tickets/:id"
+        element={
+          <ProtectedRoute>
+            <TicketDetailPage />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 };
