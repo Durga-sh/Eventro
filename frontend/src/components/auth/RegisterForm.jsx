@@ -9,6 +9,7 @@ const RegisterForm = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    role:""
   });
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState("");
@@ -50,6 +51,7 @@ const handleSubmit = async (e) => {
     name: formData.name,
     email: formData.email,
     password: formData.password,
+    role:formData.role
   };
 
   console.log("Sending registration data:", userData);
@@ -118,6 +120,17 @@ const handleSubmit = async (e) => {
             id="confirmPassword"
             name="confirmPassword"
             value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="confirmPassword">role</label>
+          <input
+            type="text"
+            id="role"
+            name="role"
+            value={formData.role}
             onChange={handleChange}
             required
           />

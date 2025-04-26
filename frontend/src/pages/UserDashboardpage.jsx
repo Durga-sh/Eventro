@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { getUserEvents } from "../api/events";
+import { getUserEvents, getAllEvents } from "../api/events";
 import EventCard from "../components/events/EventCard";
 
 const UserDashboardPage = () => {
   const { user } = useAuth();
-  const [userEvents, setUserEvents] = useState([]);
+  const [allEvents, setAllEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userStats, setUserStats] = useState({
@@ -15,24 +15,27 @@ const UserDashboardPage = () => {
   });
 
   useEffect(() => {
-    const fetchUserEvents = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const events = await getUserEvents();
-        setUserEvents(events);
+        // Fetch user-specific events for stats
+        const userEvents = await getUserEvents();
         setUserStats((prevStats) => ({
           ...prevStats,
-          eventsCreated: events.length,
+          eventsCreated: userEvents.length,
         }));
+        // Fetch all events for display
+        const events = await getAllEvents();
+        setAllEvents(events);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching events:", err);
-        setError("Failed to load your events");
+        setError("Failed to load events");
         setLoading(false);
       }
     };
 
-    fetchUserEvents();
+    fetchData();
   }, []);
 
   return (
@@ -59,39 +62,41 @@ const UserDashboardPage = () => {
             Manage events
           </Link>
         </div>
-        <div className="stat-card">
-          <h3>Create Event</h3>
-          <div className="stat-action">
-            <Link to="/create-event" className="btn-primary">
-              + New Event
-            </Link>
+        {user?.role === "admin" && (
+          <div className="stat-card">
+            <h3>Create Event</h3>
+            <div className="stat-action">
+              <Link to="/create-event" className="btn-primary">
+                + New Event
+              </Link>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* My Events Section */}
+      {/* All Events Section */}
       <div className="my-events-section">
         <div className="section-header">
-          <h2>My Events</h2>
-          <Link to="/my-events" className="view-all-link">
+          <h2>All Events</h2>
+          <Link to="/events" className="view-all-link">
             View All
           </Link>
         </div>
 
         {loading ? (
-          <div className="loading">Loading your events...</div>
+          <div className="loading">Loading events...</div>
         ) : error ? (
           <div className="error-message">{error}</div>
-        ) : userEvents.length === 0 ? (
+        ) : allEvents.length === 0 ? (
           <div className="empty-state">
-            <p>You haven't created any events yet.</p>
+            <p>No events are available yet.</p>
             <Link to="/create-event" className="btn-primary">
-              Create Your First Event
+              Create an Event
             </Link>
           </div>
         ) : (
           <div className="events-grid">
-            {userEvents.slice(0, 3).map((event) => (
+            {allEvents.slice(0, 3).map((event) => (
               <EventCard key={event._id} event={event} />
             ))}
           </div>

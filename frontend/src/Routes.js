@@ -13,6 +13,7 @@ import EditEventPage from "./pages/EditEventPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import MyTicketsPage from "./pages/MyTicketsPage";
 import TicketDetailPage from "./pages/TicketDetailPage";
+import VerifyTicketPage from "./components/tickets/verifyTicketPage";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -82,6 +83,8 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
+      <Route path="/verify" element={<VerifyTicketPage />} />
     </Routes>
   );
 };

@@ -9,8 +9,13 @@ router.get("/my-tickets", isAuthenticated, ticketController.getUserTickets);
 // Get single ticket
 router.get("/:id", isAuthenticated, ticketController.getTicket);
 
+// Create ticket (no payment required)
+router.post("/create", isAuthenticated, ticketController.createTicket);
+
 // Verify ticket (for check-in)
 router.post("/verify", isAuthenticated, ticketController.verifyTicket);
+
+router.post("/public-verify", ticketController.publicVerifyTicket);
 
 // Get tickets for an event (admin/organizer only)
 router.get(

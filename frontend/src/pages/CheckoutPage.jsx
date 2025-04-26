@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { getEventById } from "../api/events";
-import { processPayment } from "../api/payments";
 import { formatPrice } from "../utils/priceFormatter";
 import { formatDate } from "../utils/dateFormatter";
 
@@ -59,49 +58,66 @@ const CheckoutPage = () => {
     fetchEventDetails();
   }, [eventId, ticketTypeId, quantity, unitPrice, totalPrice, navigate]);
 
-const handleSubmitPayment = async (e) => {
-  e.preventDefault();
+  const handleCreateTicket = async (e) => {
+    e.preventDefault();
 
-  if (!user) {
-    navigate("/login");
-    return;
-  }
+    if (!user) {
+      navigate("/login");
+      return;
+    }
 
-  try {
-    setIsLoading(true);
-    setError(null);
+    try {
+      setIsLoading(true);
+      setError(null);
 
-    // Create payment payload
-    const paymentPayload = {
-      eventId,
-      ticketTypeId,
-      quantity,
-      paymentMethod: "credit_card", // Simplified for demo
-      // In a real app, you would include payment token or details
-    };
+      // Create ticket payload
+      const ticketPayload = {
+        eventId,
+        ticketTypeId,
+        quantity,
+      };
 
-    console.log("Sending payment request:", paymentPayload);
+      console.log("Creating ticket:", ticketPayload);
 
-    const paymentResult = await processPayment(paymentPayload);
+      // Send request to create ticket directly
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_URL || "http://localhost:5000/api"
+        }/tickets/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(ticketPayload),
+        }
+      );
 
-    console.log("Payment successful:", paymentResult);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to create ticket");
+      }
 
-    setPaymentSuccess(true);
-    // Navigate to success page or ticket page after short delay
-    setTimeout(() => {
-      navigate("/my-tickets", {
-        state: {
-          successMessage: "Your ticket has been purchased successfully!",
-        },
-      });
-    }, 2000);
-  } catch (err) {
-    console.error("Payment error:", err);
-    setError(err.message || "Payment failed. Please try again.");
-  } finally {
-    setIsLoading(false);
-  }
-};
+      const ticketResult = await response.json();
+      console.log("Ticket created successfully:", ticketResult);
+
+      setPaymentSuccess(true);
+      // Navigate to success page or ticket page after short delay
+      setTimeout(() => {
+        navigate("/my-tickets", {
+          state: {
+            successMessage: "Your ticket has been created successfully!",
+          },
+        });
+      }, 2000);
+    } catch (err) {
+      console.error("Ticket creation error:", err);
+      setError(err.message || "Ticket creation failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (!ticketData || !event) {
     return (
@@ -112,11 +128,11 @@ const handleSubmitPayment = async (e) => {
   return (
     <div className="checkout-page">
       <div className="container">
-        <h1>Complete Your Purchase</h1>
+        <h1>Complete Your Booking</h1>
 
         {paymentSuccess && (
           <div className="success-message">
-            <h2>Payment Successful!</h2>
+            <h2>Booking Successful!</h2>
             <p>
               Your tickets have been reserved. Redirecting to your tickets...
             </p>
@@ -152,45 +168,39 @@ const handleSubmitPayment = async (e) => {
               </div>
             </div>
 
-            <div className="payment-form-container">
-              <h2>Payment Details</h2>
-              <form className="payment-form" onSubmit={handleSubmitPayment}>
-                {/* In a real app, you would include payment form fields here */}
+            <div className="booking-form-container">
+              <h2>Contact Information</h2>
+              <form className="booking-form" onSubmit={handleCreateTicket}>
                 <div className="form-group">
-                  <label htmlFor="cardName">Name on Card</label>
+                  <label htmlFor="name">Name</label>
                   <input
                     type="text"
-                    id="cardName"
-                    placeholder="John Doe"
+                    id="name"
+                    defaultValue={user?.name || ""}
+                    placeholder="Your name"
                     required
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="cardNumber">Card Number</label>
+                  <label htmlFor="email">Email</label>
                   <input
-                    type="text"
-                    id="cardNumber"
-                    placeholder="1234 5678 9012 3456"
+                    type="email"
+                    id="email"
+                    defaultValue={user?.email || ""}
+                    placeholder="your.email@example.com"
                     required
                   />
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="expiryDate">Expiry Date</label>
-                    <input
-                      type="text"
-                      id="expiryDate"
-                      placeholder="MM/YY"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="cvv">CVV</label>
-                    <input type="text" id="cvv" placeholder="123" required />
-                  </div>
+                <div className="form-group">
+                  <label htmlFor="phone">Phone Number</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    placeholder="(123) 456-7890"
+                    required
+                  />
                 </div>
 
                 <button
@@ -200,7 +210,7 @@ const handleSubmitPayment = async (e) => {
                 >
                   {isLoading
                     ? "Processing..."
-                    : `Pay ${formatPrice(totalPrice)}`}
+                    : `Book Tickets (${formatPrice(totalPrice)})`}
                 </button>
               </form>
             </div>
