@@ -40,7 +40,11 @@ export const getAllEvents = async (filters = {}) => {
 // Get events created by the current user
 export const getUserEvents = async () => {
   try {
-    const response = await axios.get(`${API_URL}/events/user`, authHeader());
+    // Updated to match the backend route in routes/events.js
+    const response = await axios.get(
+      `${API_URL}/events/user/myevents`,
+      authHeader()
+    );
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: "Failed to fetch your events" };
@@ -56,7 +60,7 @@ export const getUpcomingEvents = async () => {
       `${API_URL}/events?startDate=${today}&sort=dateAsc`,
       authHeader()
     );
-    return { events: response.data };
+    return response.data;
   } catch (error) {
     throw (
       error.response?.data || { message: "Failed to fetch upcoming events" }

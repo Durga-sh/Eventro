@@ -7,7 +7,10 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import UserDashboardPage from "./pages/UserDashboardpage";
-import CreateEventPage from "./pages/createEventPage.jsx";
+import CreateEventPage from "./pages/createEventPage";
+import EventDetailsPage from "./pages/EventDetailsPage";
+import EditEventPage from "./pages/EditEventPage";
+
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -28,6 +31,7 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/events/:id" element={<EventDetailsPage />} />
       <Route
         path="/dashboard"
         element={
@@ -40,10 +44,20 @@ const AppRoutes = () => {
         path="/create-event"
         element={
           <ProtectedRoute>
-            <UserDashboardPage/>
+            <CreateEventPage />
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/edit-event/:id"
+        element={
+          <ProtectedRoute>
+            <EditEventPage />
+          </ProtectedRoute>
+        }
+      />
+    
+    
       {/* Add other routes here */}
     </Routes>
   );

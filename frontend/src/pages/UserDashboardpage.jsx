@@ -1,13 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { getUserEvents } from "../api/events";
+import EventCard from "../components/events/EventCard";
 
 const UserDashboardPage = () => {
   const { user } = useAuth();
-  const [userStats] = useState({
+  const [userEvents, setUserEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [userStats, setUserStats] = useState({
     ticketsCount: 0,
     eventsCreated: 0,
   });
+
+  useEffect(() => {
+    const fetchUserEvents = async () => {
+      try {
+        setLoading(true);
+        const events = await getUserEvents();
+        setUserEvents(events);
+        setUserStats((prevStats) => ({
+          ...prevStats,
+          eventsCreated: events.length,
+        }));
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching events:", err);
+        setError("Failed to load your events");
+        setLoading(false);
+      }
+    };
+
+    fetchUserEvents();
+  }, []);
 
   return (
     <div className="dashboard-page">
@@ -41,6 +67,35 @@ const UserDashboardPage = () => {
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* My Events Section */}
+      <div className="my-events-section">
+        <div className="section-header">
+          <h2>My Events</h2>
+          <Link to="/my-events" className="view-all-link">
+            View All
+          </Link>
+        </div>
+
+        {loading ? (
+          <div className="loading">Loading your events...</div>
+        ) : error ? (
+          <div className="error-message">{error}</div>
+        ) : userEvents.length === 0 ? (
+          <div className="empty-state">
+            <p>You haven't created any events yet.</p>
+            <Link to="/create-event" className="btn-primary">
+              Create Your First Event
+            </Link>
+          </div>
+        ) : (
+          <div className="events-grid">
+            {userEvents.slice(0, 3).map((event) => (
+              <EventCard key={event._id} event={event} />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Quick Actions Section */}
