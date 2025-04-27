@@ -14,8 +14,6 @@ export const login = async (email, password) => {
   }
 };
 
-
-
 export const register = async (userData) => {
   console.log("API register call with data:", userData);
   console.log("API URL:", `${API_URL}/auth/register`);
@@ -34,9 +32,12 @@ export const register = async (userData) => {
     );
   }
 };
-export const googleLogin = async (tokenId) => {
+
+export const googleLogin = async (credentialToken) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/google`, { tokenId });
+    const response = await axios.post(`${API_URL}/auth/google/verify`, {
+      credential: credentialToken,
+    });
     return response.data;
   } catch (error) {
     throw (
@@ -52,7 +53,7 @@ export const verifyToken = async () => {
   if (!token) return false;
 
   try {
-    const response = await axios.get(`${API_URL}/auth/verify`, {
+    const response = await axios.get(`${API_URL}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;

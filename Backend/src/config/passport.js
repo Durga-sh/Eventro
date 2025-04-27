@@ -4,6 +4,7 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const User = require("../models/User");
 const config = require("./config");
+const { OAuth2Client } = require("google-auth-library");
 
 // JWT Strategy
 const jwtOptions = {
@@ -57,4 +58,7 @@ passport.use(
   )
 );
 
+const client = new OAuth2Client(config.GOOGLE_CLIENT_ID);
+
 module.exports = passport;
+module.exports = client;

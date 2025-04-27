@@ -1,25 +1,36 @@
-import React from "react";
+// In your App.js file, add this to debug
+import React, { useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import Layout from "./components/common/Layout";
-import Routes from "./Routes";
+import { AuthProvider } from "./context/AuthContext";
+import AppRoutes from "./Routes";
+import Header from "./components/common/Header";
+import Footer from "./components/common/Footer";
 import "./App.css";
 
-const App = () => {
+function App() {
   const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
+  // Add this for debugging
+  useEffect(() => {
+    console.log("Google Client ID:", googleClientId);
+  }, [googleClientId]);
+
   return (
-    <Router>
-      <GoogleOAuthProvider clientId={googleClientId}>
-        <AuthProvider>
-          <Layout>
-            <Routes />
-          </Layout>
-        </AuthProvider>
-      </GoogleOAuthProvider>
-    </Router>
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <AuthProvider>
+        <Router>
+          <div className="app">
+            <Header />
+            <main className="main-content">
+              <AppRoutes />
+            </main>
+            <Footer />
+          </div>
+        </Router>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   );
-};
+}
 
 export default App;
