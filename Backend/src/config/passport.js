@@ -60,5 +60,7 @@ passport.use(
 
 const client = new OAuth2Client(config.GOOGLE_CLIENT_ID);
 
-module.exports = passport;
-module.exports = client;
+module.exports = {
+  passport,
+  client,
+};

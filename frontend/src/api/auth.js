@@ -33,18 +33,14 @@ export const register = async (userData) => {
   }
 };
 
-export const googleLogin = async (credentialToken) => {
+export const googleLogin = async (credential) => {
   try {
     const response = await axios.post(`${API_URL}/auth/google/verify`, {
-      credential: credentialToken,
+      credential,
     });
     return response.data;
   } catch (error) {
-    throw (
-      error.response?.data || {
-        message: "An error occurred during Google login",
-      }
-    );
+    throw error.response?.data || error;
   }
 };
 
