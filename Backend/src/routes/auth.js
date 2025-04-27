@@ -10,6 +10,7 @@ router.post("/register", authController.register);
 // Login route
 router.post("/login", authController.login);
 
+
 // Google OAuth routes
 router.get(
   "/google",

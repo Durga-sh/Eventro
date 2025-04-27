@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import Layout from "./components/common/Layout";
 import Routes from "./Routes";
 import "./App.css";
 
@@ -12,7 +13,9 @@ const App = () => {
     <Router>
       <GoogleOAuthProvider clientId={googleClientId}>
         <AuthProvider>
-          <Routes />
+          <Layout>
+            <Routes />
+          </Layout>
         </AuthProvider>
       </GoogleOAuthProvider>
     </Router>

@@ -14,6 +14,8 @@ export const login = async (email, password) => {
   }
 };
 
+
+
 export const register = async (userData) => {
   console.log("API register call with data:", userData);
   console.log("API URL:", `${API_URL}/auth/register`);
