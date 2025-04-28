@@ -135,117 +135,167 @@ const EditEventPage = () => {
   };
 
   if (loading) {
-    return <div className="loading-container">Loading event data...</div>;
+    return (
+      <div className="bg-slate-900 min-h-screen flex justify-center items-center">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="h-12 w-12 rounded-full border-4 border-t-purple-500 border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
+          <p className="mt-4 text-gray-400">Loading event data...</p>
+        </div>
+      </div>
+    );
   }
 
   if (error && !formData.title) {
-    return <div className="error-container">{error}</div>;
+    return (
+      <div className="bg-slate-900 min-h-screen py-8 px-4">
+        <div className="container mx-auto">
+          <div className="bg-red-900/30 border border-red-500 text-red-200 p-6 rounded-lg">
+            <h3 className="text-xl font-semibold mb-2">Error</h3>
+            <p>{error}</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="edit-event-page">
-      <div className="container">
-        <h1>Edit Event</h1>
+    <div className="bg-slate-900 min-h-screen py-8 px-4">
+      <div className="container mx-auto">
+        <div className="bg-gradient-to-r from-slate-800 to-slate-800/80 rounded-xl p-6 mb-8 shadow-lg">
+          <h1 className="text-2xl font-bold text-white">Edit Event</h1>
+        </div>
 
-        {error && <div className="alert alert-danger">{error}</div>}
+        {error && (
+          <div className="bg-red-900/30 border border-red-500 text-red-200 p-6 rounded-lg mb-6">
+            <p>{error}</p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
-          <div className="form-section">
-            <h2>Basic Information</h2>
-
-            <div className="form-group">
-              <label htmlFor="title">Event Title</label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                required
-                className="form-control"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="description">Description</label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                rows="5"
-                className="form-control"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="image">Image URL</label>
-              <input
-                type="text"
-                id="image"
-                name="image"
-                value={formData.image || ""}
-                onChange={handleInputChange}
-                className="form-control"
-              />
-            </div>
-          </div>
-
-          <div className="form-section">
-            <h2>Date & Location</h2>
-
-            <div className="form-group">
-              <label htmlFor="location">Location</label>
-              <input
-                type="text"
-                id="location"
-                name="location"
-                value={formData.location}
-                onChange={handleInputChange}
-                required
-                className="form-control"
-              />
-            </div>
-
-            <div className="form-row">
+          {/* Basic Information Section */}
+          <div className="bg-slate-800 rounded-xl p-6 shadow-lg mb-6">
+            <h2 className="text-xl font-bold text-white mb-4">
+              Basic Information
+            </h2>
+            <div className="space-y-4">
               <div className="form-group">
-                <label htmlFor="startDate">Start Date</label>
+                <label htmlFor="title" className="block text-gray-400 mb-1">
+                  Event Title
+                </label>
                 <input
-                  type="date"
-                  id="startDate"
-                  name="startDate"
-                  value={formData.startDate}
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={formData.title}
                   onChange={handleInputChange}
                   required
-                  className="form-control"
+                  className="w-full bg-slate-700 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
                 />
               </div>
-
               <div className="form-group">
-                <label htmlFor="endDate">End Date</label>
-                <input
-                  type="date"
-                  id="endDate"
-                  name="endDate"
-                  value={formData.endDate}
+                <label
+                  htmlFor="description"
+                  className="block text-gray-400 mb-1"
+                >
+                  Description
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={formData.description}
                   onChange={handleInputChange}
-                  required
-                  className="form-control"
+                  rows="5"
+                  className="w-full bg-slate-700 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="image" className="block text-gray-400 mb-1">
+                  Image URL
+                </label>
+                <input
+                  type="text"
+                  id="image"
+                  name="image"
+                  value={formData.image || ""}
+                  onChange={handleInputChange}
+                  className="w-full bg-slate-700 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
                 />
               </div>
             </div>
           </div>
 
-          <div className="form-section">
-            <h2>Ticket Types</h2>
+          {/* Date & Location Section */}
+          <div className="bg-slate-800 rounded-xl p-6 shadow-lg mb-6">
+            <h2 className="text-xl font-bold text-white mb-4">
+              Date & Location
+            </h2>
+            <div className="space-y-4">
+              <div className="form-group">
+                <label htmlFor="location" className="block text-gray-400 mb-1">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full bg-slate-700 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="form-group">
+                  <label
+                    htmlFor="startDate"
+                    className="block text-gray-400 mb-1"
+                  >
+                    Start Date
+                  </label>
+                  <input
+                    type="date"
+                    id="startDate"
+                    name="startDate"
+                    value={formData.startDate}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full bg-slate-700 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="endDate" className="block text-gray-400 mb-1">
+                    End Date
+                  </label>
+                  <input
+                    type="date"
+                    id="endDate"
+                    name="endDate"
+                    value={formData.endDate}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full bg-slate-700 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
 
+          {/* Ticket Types Section */}
+          <div className="bg-slate-800 rounded-xl p-6 shadow-lg mb-6">
+            <h2 className="text-xl font-bold text-white mb-4">Ticket Types</h2>
             {formData.ticketTypes.map((ticket, index) => (
-              <div key={index} className="ticket-type-container">
-                <h3>Ticket #{index + 1}</h3>
-
-                <div className="form-row">
+              <div key={index} className="bg-slate-700 rounded-lg p-4 mb-4">
+                <h3 className="text-lg font-semibold text-white mb-3">
+                  Ticket #{index + 1}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div className="form-group">
-                    <label htmlFor={`ticket-name-${index}`}>Name</label>
+                    <label
+                      htmlFor={`ticket-name-${index}`}
+                      className="block text-gray-400 mb-1"
+                    >
+                      Name
+                    </label>
                     <input
                       type="text"
                       id={`ticket-name-${index}`}
@@ -254,12 +304,16 @@ const EditEventPage = () => {
                         handleTicketChange(index, "name", e.target.value)
                       }
                       required
-                      className="form-control"
+                      className="w-full bg-slate-600 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
                     />
                   </div>
-
                   <div className="form-group">
-                    <label htmlFor={`ticket-price-${index}`}>Price ($)</label>
+                    <label
+                      htmlFor={`ticket-price-${index}`}
+                      className="block text-gray-400 mb-1"
+                    >
+                      Price ($)
+                    </label>
                     <input
                       type="number"
                       id={`ticket-price-${index}`}
@@ -270,14 +324,16 @@ const EditEventPage = () => {
                       min="0"
                       step="0.01"
                       required
-                      className="form-control"
+                      className="w-full bg-slate-600 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
                     />
                   </div>
                 </div>
-
-                <div className="form-row">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div className="form-group">
-                    <label htmlFor={`ticket-quantity-${index}`}>
+                    <label
+                      htmlFor={`ticket-quantity-${index}`}
+                      className="block text-gray-400 mb-1"
+                    >
                       Total Quantity
                     </label>
                     <input
@@ -289,12 +345,14 @@ const EditEventPage = () => {
                       }
                       min="0"
                       required
-                      className="form-control"
+                      className="w-full bg-slate-600 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
                     />
                   </div>
-
                   <div className="form-group">
-                    <label htmlFor={`ticket-available-${index}`}>
+                    <label
+                      htmlFor={`ticket-available-${index}`}
+                      className="block text-gray-400 mb-1"
+                    >
                       Available
                     </label>
                     <input
@@ -307,13 +365,15 @@ const EditEventPage = () => {
                       min="0"
                       max={ticket.quantity}
                       required
-                      className="form-control"
+                      className="w-full bg-slate-600 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
                     />
                   </div>
                 </div>
-
                 <div className="form-group">
-                  <label htmlFor={`ticket-description-${index}`}>
+                  <label
+                    htmlFor={`ticket-description-${index}`}
+                    className="block text-gray-400 mb-1"
+                  >
                     Description
                   </label>
                   <textarea
@@ -322,71 +382,74 @@ const EditEventPage = () => {
                     onChange={(e) =>
                       handleTicketChange(index, "description", e.target.value)
                     }
-                    className="form-control"
+                    className="w-full bg-slate-600 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
                   />
                 </div>
-
                 <button
                   type="button"
                   onClick={() => removeTicketType(index)}
-                  className="btn btn-danger btn-sm"
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-colors mt-2"
                 >
                   Remove Ticket Type
                 </button>
               </div>
             ))}
-
             <button
               type="button"
               onClick={addTicketType}
-              className="btn btn-secondary"
+              className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-md transition-colors"
             >
               Add Ticket Type
             </button>
           </div>
 
-          <div className="form-section">
-            <h2>Tags & Status</h2>
-
-            <div className="form-group">
-              <label htmlFor="tags">Tags (comma separated)</label>
-              <input
-                type="text"
-                id="tags"
-                value={formData.tags.join(", ")}
-                onChange={handleTagsChange}
-                className="form-control"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="status">Status</label>
-              <select
-                id="status"
-                name="status"
-                value={formData.status}
-                onChange={handleInputChange}
-                className="form-control"
-              >
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
+          {/* Tags & Status Section */}
+          <div className="bg-slate-800 rounded-xl p-6 shadow-lg mb-6">
+            <h2 className="text-xl font-bold text-white mb-4">Tags & Status</h2>
+            <div className="space-y-4">
+              <div className="form-group">
+                <label htmlFor="tags" className="block text-gray-400 mb-1">
+                  三是 (comma separated)
+                </label>
+                <input
+                  type="text"
+                  id="tags"
+                  value={formData.tags.join(", ")}
+                  onChange={handleTagsChange}
+                  className="w-full bg-slate-700 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="status" className="block text-gray-400 mb-1">
+                  Status
+                </label>
+                <select
+                  id="status"
+                  name="status"
+                  value={formData.status}
+                  onChange={handleInputChange}
+                  className="w-full bg-slate-700 text-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                >
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
             </div>
           </div>
 
-          <div className="form-actions">
+          {/* Form Actions */}
+          <div className="flex justify-end gap-4">
             <button
               type="button"
               onClick={() => navigate(`/events/${id}`)}
-              className="btn btn-secondary"
+              className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-md transition-colors"
             >
               Cancel
             </button>
-
             <button
               type="submit"
-              className="btn btn-primary"
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
               disabled={submitting}
             >
               {submitting ? "Saving..." : "Save Changes"}

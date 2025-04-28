@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import QRCode from "qrcode";
+import { motion } from "framer-motion";
 
 const TicketQRCode = ({ qrData }) => {
   const [qrCodeUrl, setQrCodeUrl] = useState("");
@@ -64,50 +67,99 @@ const TicketQRCode = ({ qrData }) => {
 
   if (isLoading) {
     return (
-      <div className="qr-code-loading">
-        <p>Generating QR code...</p>
-      </div>
+      <motion.div
+        className="flex flex-col items-center justify-center p-6 bg-slate-800 rounded-xl"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: 1.5,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+          className="h-10 w-10 rounded-full border-4 border-t-purple-500 border-r-transparent border-b-transparent border-l-transparent"
+        ></motion.div>
+        <p className="mt-4 text-gray-400">Generating QR code...</p>
+      </motion.div>
     );
   }
 
   if (error && !qrCodeUrl) {
     return (
-      <div className="qr-code-error">
-        <p>{error}</p>
-        <div className="mock-qr">
-          <div className="qr-content">
+      <motion.div
+        className="p-6 bg-red-900/20 border border-red-500 rounded-xl text-center"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 100 }}
+      >
+        <p className="text-red-300 mb-4">{error}</p>
+        <div className="w-40 h-40 mx-auto bg-slate-700 flex items-center justify-center rounded-lg">
+          <div className="text-xl font-mono text-gray-400">
             {qrData ? qrData.substring(0, 8) : "ERROR"}
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="qr-code-container">
+    <motion.div
+      className="flex flex-col items-center justify-center p-6 bg-slate-800 rounded-xl"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: "spring", stiffness: 200 }}
+    >
       {qrCodeUrl ? (
         <>
-          <img
-            src={qrCodeUrl}
-            alt="Ticket QR Code"
-            className="ticket-qr-code"
-          />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            whileHover={{ scale: 1.05 }}
+            className="bg-white p-3 rounded-lg shadow-lg"
+          >
+            <img
+              src={qrCodeUrl || "/placeholder.svg"}
+              alt="Ticket QR Code"
+              className="w-40 h-40"
+            />
+          </motion.div>
           {error && (
-            <p className="qr-warning">Note: QR code contains truncated data</p>
+            <motion.p
+              className="mt-2 text-yellow-300 text-xs"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              Note: QR code contains truncated data
+            </motion.p>
           )}
-          <p>Present this QR code at the event entrance</p>
+          <motion.p
+            className="mt-4 text-gray-400 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            Present this QR code at the event entrance
+          </motion.p>
         </>
       ) : (
-        <div className="qr-code-placeholder">
-          <div className="mock-qr">
-            <div className="qr-content">
+        <motion.div
+          className="flex flex-col items-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <div className="w-40 h-40 bg-slate-700 flex items-center justify-center rounded-lg">
+            <div className="text-xl font-mono text-gray-400">
               {qrData ? qrData.substring(0, 8) : "TICKET"}
             </div>
           </div>
-          <p>QR Code for check-in</p>
-        </div>
+          <p className="mt-4 text-gray-400">QR Code for check-in</p>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 };
 
