@@ -19,7 +19,7 @@ const Header = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-500 to-violet-400 bg-clip-text text-transparent">
-                EventHub
+                Eventro
               </h1>
             </Link>
           </div>

@@ -12,7 +12,7 @@ const HomePage = () => {
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
             Welcome to{" "}
             <span className="bg-gradient-to-r from-purple-400 to-violet-300 bg-clip-text text-transparent">
-              EventHub
+              Eventro
             </span>
           </h1>
           <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
@@ -53,7 +53,7 @@ const HomePage = () => {
           <h2 className="text-3xl font-bold text-white text-center mb-12">
             Why Choose{" "}
             <span className="bg-gradient-to-r from-purple-400 to-violet-300 bg-clip-text text-transparent">
-              EventHub
+              Eventro
             </span>
             ?
           </h2>
