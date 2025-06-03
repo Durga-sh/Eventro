@@ -1,33 +1,144 @@
-
 const User = require("../models/User");
 const { generateToken } = require("../middleware/auth");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 
-// Register a new user
+// Email transporter configuration
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS, // This should be your Gmail App Password
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
+
+// Verify transporter configuration
+transporter.verify(function (error, success) {
+  if (error) {
+    console.error("Email transporter verification failed:", error);
+  } else {
+    console.log("Email server is ready to take our messages");
+  }
+});
+
+// Store temporary user data and OTP (in production, use Redis or database)
+const tempUsers = new Map();
+
+// Generate 6-digit OTP
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+// Send OTP email
+const sendOTPEmail = async (email, otp) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "EventHub - Email Verification OTP",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #8B5CF6;">EventHub - Email Verification</h2>
+        <p>Your OTP for email verification is:</p>
+        <h1 style="background: #8B5CF6; color: white; padding: 20px; text-align: center; border-radius: 8px; letter-spacing: 4px;">${otp}</h1>
+        <p>This OTP will expire in 10 minutes.</p>
+        <p>If you didn't request this, please ignore this email.</p>
+      </div>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
+// Register a new user (Step 1: Send OTP)
 exports.register = async (req, res) => {
   try {
-    const { name, email, password , role  } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Check if user already exists
-    let user = await User.findOne({ email });
-    if (user) {
+    let existingUser = await User.findOne({ email });
+    if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Create new user
-    user = new User({
+    // Generate OTP
+    const otp = generateOTP();
+
+    // Store temporary user data with OTP
+    const tempUserId = crypto.randomUUID();
+    tempUsers.set(tempUserId, {
       name,
       email,
       password,
-      role
+      role,
+      otp,
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+    });
+
+    // Send OTP email
+    await sendOTPEmail(email, otp);
+
+    res.status(200).json({
+      success: true,
+      message:
+        "OTP sent to your email. Please verify to complete registration.",
+      tempUserId,
+    });
+  } catch (error) {
+    console.error("Registration error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Verify OTP and complete registration (Step 2)
+exports.verifyOTP = async (req, res) => {
+  try {
+    const { tempUserId, otp } = req.body;
+
+    // Get temporary user data
+    const tempUserData = tempUsers.get(tempUserId);
+    if (!tempUserData) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired verification session" });
+    }
+
+    // Check if OTP is expired
+    if (new Date() > tempUserData.expiresAt) {
+      tempUsers.delete(tempUserId);
+      return res
+        .status(400)
+        .json({ message: "OTP has expired. Please register again." });
+    }
+
+    // Verify OTP
+    if (tempUserData.otp !== otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    // Create new user
+    const user = new User({
+      name: tempUserData.name,
+      email: tempUserData.email,
+      password: tempUserData.password,
+      role: tempUserData.role,
+      isEmailVerified: true,
     });
 
     await user.save();
+
+    // Clean up temporary data
+    tempUsers.delete(tempUserId);
 
     // Generate JWT token
     const token = generateToken(user);
 
     res.status(201).json({
       success: true,
+      message: "Registration completed successfully",
       token,
       user: {
         id: user._id,
@@ -37,7 +148,41 @@ exports.register = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error("OTP verification error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Resend OTP
+exports.resendOTP = async (req, res) => {
+  try {
+    const { tempUserId } = req.body;
+
+    // Get temporary user data
+    const tempUserData = tempUsers.get(tempUserId);
+    if (!tempUserData) {
+      return res.status(400).json({ message: "Invalid verification session" });
+    }
+
+    // Generate new OTP
+    const newOTP = generateOTP();
+
+    // Update temporary user data
+    tempUsers.set(tempUserId, {
+      ...tempUserData,
+      otp: newOTP,
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000), // Reset expiry to 10 minutes
+    });
+
+    // Send new OTP email
+    await sendOTPEmail(tempUserData.email, newOTP);
+
+    res.status(200).json({
+      success: true,
+      message: "New OTP sent to your email",
+    });
+  } catch (error) {
+    console.error("Resend OTP error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

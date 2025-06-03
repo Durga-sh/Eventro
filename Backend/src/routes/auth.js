@@ -7,12 +7,17 @@ const { OAuth2Client } = require("google-auth-library");
 const User = require("../models/User"); // Make sure to import your User model
 const config = require("../config/config"); // Import your config file
 
-
 // Initialize the Google OAuth client
 const client = new OAuth2Client(config.GOOGLE_CLIENT_ID);
 
-// Register route
+// Register route (Step 1: Send OTP)
 router.post("/register", authController.register);
+
+// Verify OTP route (Step 2: Complete registration)
+router.post("/verify-otp", authController.verifyOTP);
+
+// Resend OTP route
+router.post("/resend-otp", authController.resendOTP);
 
 // Login route
 router.post("/login", authController.login);

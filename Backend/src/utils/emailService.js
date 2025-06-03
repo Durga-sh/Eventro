@@ -1,20 +1,32 @@
 const nodemailer = require("nodemailer");
 const config = require("../config/config");
 
-// Enhanced transporter with better error handling
+// Enhanced transporter with app-specific password
 const createTransporter = () => {
   console.log("Creating email transporter with config:");
-  console.log("Email User:", config.EMAIL_USER ? "✓ Set" : "✗ Missing");
-  console.log("Email Pass:", config.EMAIL_PASS ? "✓ Set" : "✗ Missing");
+  console.log("EMAIL_USER:", config.EMAIL_USER ? "✓ Set" : "✗ Missing");
+  console.log("EMAIL_PASS:", config.EMAIL_PASS ? "✓ Set" : "✗ Missing");
+
+  if (!config.EMAIL_USER || !config.EMAIL_PASS) {
+    throw new Error(
+      `Missing email configuration: ${[
+        !config.EMAIL_USER && "EMAIL_USER",
+        !config.EMAIL_PASS && "EMAIL_PASS",
+      ]
+        .filter(Boolean)
+        .join(", ")}`
+    );
+  }
 
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
       user: config.EMAIL_USER,
       pass: config.EMAIL_PASS,
     },
-    debug: true, // Enable debug logging
-    logger: true, // Enable logger
+    debug: true,
   });
 
   return transporter;
@@ -88,7 +100,12 @@ exports.sendTicketEmail = async (user, ticket, event, qrCode) => {
     // Check email configuration
     if (!config.EMAIL_USER || !config.EMAIL_PASS) {
       throw new Error(
-        "Email configuration missing. Please check EMAIL_USER and EMAIL_PASS in your config."
+        `Missing email configuration: ${[
+          !config.EMAIL_USER && "EMAIL_USER",
+          !config.EMAIL_PASS && "EMAIL_PASS",
+        ]
+          .filter(Boolean)
+          .join(", ")}`
       );
     }
 
@@ -126,134 +143,53 @@ exports.sendTicketEmail = async (user, ticket, event, qrCode) => {
       to: user.email,
       subject: `🎫 Your Ticket Confirmation for ${event.title}`,
       html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Your Event Ticket</title>
-          <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
-            .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
-            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; text-align: center; }
-            .header h1 { margin: 0; font-size: 28px; font-weight: 300; }
-            .content { padding: 30px 20px; }
-            .ticket-info { background: #f8f9fa; border-left: 4px solid #667eea; padding: 20px; margin: 20px 0; border-radius: 5px; }
-            .event-details { background: #ffffff; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; margin: 20px 0; }
-            .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
-            .detail-row:last-child { border-bottom: none; }
-            .detail-label { font-weight: 600; color: #495057; }
-            .detail-value { color: #212529; }
-            .qr-section { text-align: center; margin: 30px 0; padding: 20px; background: #f8f9fa; border-radius: 8px; }
-            .qr-code { max-width: 200px; height: auto; border: 2px solid #dee2e6; border-radius: 8px; }
-            .total-section { background: #667eea; color: white; padding: 15px 20px; margin: 20px 0; border-radius: 5px; text-align: center; }
-            .footer { background: #212529; color: #adb5bd; padding: 20px; text-align: center; font-size: 14px; }
-            .important-note { background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; padding: 15px; border-radius: 5px; margin: 20px 0; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>🎫 Event Ticket Confirmation</h1>
-              <p style="margin: 10px 0 0 0; opacity: 0.9;">Your booking is confirmed!</p>
-            </div>
-            
-            <div class="content">
-              <p style="font-size: 16px; color: #495057; margin-bottom: 25px;">
-                Dear <strong>${user.name}</strong>,
-              </p>
-              
-              <p style="color: #495057; line-height: 1.6;">
-                Thank you for your booking! Your ticket has been confirmed for <strong>${
-                  event.title
-                }</strong>.
-              </p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2>🎫 Event Ticket Confirmation</h2>
+          <p>Your booking is confirmed!</p>
+          <h3>Dear ${user.name},</h3>
+          <p>Thank you for your booking! Your ticket has been confirmed for ${
+            event.title
+          }.</p>
+          
+          <h3>📅 Event Details</h3>
+          <ul>
+            <li><strong>Event:</strong> ${event.title}</li>
+            <li><strong>Date:</strong> ${formattedDate}</li>
+            <li><strong>Time:</strong> ${formattedTime}</li>
+            <li><strong>Venue:</strong> ${event.location}</li>
+          </ul>
+          
+          <h3>🎟️ Ticket Information</h3>
+          <ul>
+            <li><strong>Ticket Number:</strong> ${ticket.ticketNumber}</li>
+            <li><strong>Type:</strong> ${ticket.ticketType}</li>
+            <li><strong>Quantity:</strong> ${ticket.quantity}</li>
+            ${
+              totalAmount > 0
+                ? `<li><strong>Total:</strong> ₹${totalAmount.toLocaleString()}</li>`
+                : ""
+            }
+          </ul>
 
-              <div class="event-details">
-                <h3 style="margin-top: 0; color: #495057; font-size: 18px;">📅 Event Details</h3>
-                
-                <div class="detail-row">
-                  <span class="detail-label">Event:</span>
-                  <span class="detail-value"><strong>${
-                    event.title
-                  }</strong></span>
-                </div>
-                
-                <div class="detail-row">
-                  <span class="detail-label">Date:</span>
-                  <span class="detail-value">${formattedDate}</span>
-                </div>
-                
-                <div class="detail-row">
-                  <span class="detail-label">Time:</span>
-                  <span class="detail-value">${formattedTime}</span>
-                </div>
-                
-                <div class="detail-row">
-                  <span class="detail-label">Venue:</span>
-                  <span class="detail-value">${event.location}</span>
-                </div>
-              </div>
+          ${
+            qrCode
+              ? `
+            <h3>📱 Your QR Code</h3>
+            <p>Present this at the event entrance</p>
+            <img src="${qrCode}" alt="Ticket QR Code" style="max-width: 200px;">
+          `
+              : ""
+          }
 
-              <div class="ticket-info">
-                <h3 style="margin-top: 0; color: #495057; font-size: 18px;">🎟️ Ticket Information</h3>
-                
-                <div class="detail-row">
-                  <span class="detail-label">Ticket Number:</span>
-                  <span class="detail-value"><strong>${
-                    ticket.ticketNumber
-                  }</strong></span>
-                </div>
-                
-                <div class="detail-row">
-                  <span class="detail-label">Type:</span>
-                  <span class="detail-value">${ticket.ticketType}</span>
-                </div>
-                
-                <div class="detail-row">
-                  <span class="detail-label">Quantity:</span>
-                  <span class="detail-value">${ticket.quantity}</span>
-                </div>
-              </div>
-
-              ${
-                totalAmount > 0
-                  ? `
-              <div class="total-section">
-                <h3 style="margin: 0;">Total: ₹${totalAmount.toLocaleString()}</h3>
-              </div>
-              `
-                  : ""
-              }
-
-              ${
-                qrCode
-                  ? `
-              <div class="qr-section">
-                <h3 style="color: #495057; margin-bottom: 15px;">📱 Your QR Code</h3>
-                <img src="${qrCode}" alt="Ticket QR Code" class="qr-code">
-                <p style="color: #6c757d; margin-top: 15px;">Present this at the event entrance</p>
-              </div>
-              `
-                  : ""
-              }
-
-              <div class="important-note">
-                <h4 style="margin-top: 0;">Important:</h4>
-                <ul style="margin: 10px 0; padding-left: 20px;">
-                  <li>Arrive 30 minutes early</li>
-                  <li>Bring valid ID</li>
-                  <li>Keep this email safe</li>
-                </ul>
-              </div>
-            </div>
-            
-            <div class="footer">
-              <p style="margin: 0;">Event Management System</p>
-            </div>
-          </div>
-        </body>
-        </html>
+          <h3>Important:</h3>
+          <ul>
+            <li>Arrive 30 minutes early</li>
+            <li>Bring valid ID</li>
+            <li>Keep this email safe</li>
+          </ul>
+          
+          <p style="margin-top: 20px;">Event Management System</p>
+        </div>
       `,
       text: `
         EVENT TICKET CONFIRMATION

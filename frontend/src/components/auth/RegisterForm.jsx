@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { register } from "../../api/auth";
+import { register, verifyOTP, resendOTP } from "../../api/auth";
 import { useAuth } from "../../hooks/useAuth";
 
 const RegisterForm = () => {
+  const [step, setStep] = useState(1); // 1: Registration Form, 2: OTP Verification
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -11,8 +12,14 @@ const RegisterForm = () => {
     confirmPassword: "",
     role: "user", // Default role
   });
+  const [otpData, setOtpData] = useState({
+    otp: "",
+    tempUserId: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [countdown, setCountdown] = useState(0);
   const navigate = useNavigate();
   const { loginUser } = useAuth();
 
@@ -20,6 +27,14 @@ const RegisterForm = () => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleOTPChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "").slice(0, 6); // Only digits, max 6
+    setOtpData({
+      ...otpData,
+      otp: value,
     });
   };
 
@@ -37,6 +52,19 @@ const RegisterForm = () => {
     return true;
   };
 
+  const startCountdown = () => {
+    setCountdown(60);
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -46,6 +74,7 @@ const RegisterForm = () => {
 
     setIsLoading(true);
     setFormError("");
+    setSuccessMessage("");
 
     const userData = {
       name: formData.name,
@@ -60,9 +89,14 @@ const RegisterForm = () => {
       const response = await register(userData);
       console.log("Registration response:", response);
 
-      if (response.user && response.token) {
-        loginUser(response.user, response.token);
-        navigate("/dashboard");
+      if (response.success && response.tempUserId) {
+        setOtpData({
+          ...otpData,
+          tempUserId: response.tempUserId,
+        });
+        setStep(2);
+        setSuccessMessage("OTP sent to your email! Please check your inbox.");
+        startCountdown();
       } else {
         setFormError("Invalid response from server");
       }
@@ -73,6 +107,164 @@ const RegisterForm = () => {
       setIsLoading(false);
     }
   };
+
+  const handleOTPSubmit = async (e) => {
+    e.preventDefault();
+
+    if (otpData.otp.length !== 6) {
+      setFormError("Please enter a valid 6-digit OTP");
+      return;
+    }
+
+    setIsLoading(true);
+    setFormError("");
+
+    try {
+      const response = await verifyOTP({
+        tempUserId: otpData.tempUserId,
+        otp: otpData.otp,
+      });
+
+      console.log("OTP verification response:", response);
+
+      if (response.success && response.user && response.token) {
+        loginUser(response.user, response.token);
+        navigate("/dashboard");
+      } else {
+        setFormError("Invalid response from server");
+      }
+    } catch (err) {
+      console.error("OTP verification error:", err);
+      setFormError(err.message || "Failed to verify OTP. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendOTP = async () => {
+    if (countdown > 0) return;
+
+    setIsLoading(true);
+    setFormError("");
+    setSuccessMessage("");
+
+    try {
+      const response = await resendOTP(otpData.tempUserId);
+
+      if (response.success) {
+        setSuccessMessage("New OTP sent to your email!");
+        startCountdown();
+      }
+    } catch (err) {
+      console.error("Resend OTP error:", err);
+      setFormError(err.message || "Failed to resend OTP. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (step === 2) {
+    return (
+      <div className="w-full">
+        <h2 className="text-2xl font-bold text-white mb-6 text-center">
+          Verify Your Email
+        </h2>
+        <p className="text-gray-300 text-center mb-6">
+          We've sent a 6-digit OTP to <strong>{formData.email}</strong>
+        </p>
+
+        {formError && (
+          <div className="bg-red-900/30 border border-red-500 text-red-200 p-4 rounded-md mb-6">
+            {formError}
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="bg-green-900/30 border border-green-500 text-green-200 p-4 rounded-md mb-6">
+            {successMessage}
+          </div>
+        )}
+
+        <form onSubmit={handleOTPSubmit} className="space-y-6">
+          <div className="form-group">
+            <label
+              htmlFor="otp"
+              className="block text-gray-300 mb-2 text-center"
+            >
+              Enter OTP
+            </label>
+            <input
+              type="text"
+              id="otp"
+              name="otp"
+              value={otpData.otp}
+              onChange={handleOTPChange}
+              required
+              maxLength="6"
+              className="w-full bg-slate-700 border border-slate-600 rounded-md px-4 py-3 text-white text-center text-2xl font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="000000"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-md transition-colors flex items-center justify-center"
+            disabled={isLoading || otpData.otp.length !== 6}
+          >
+            {isLoading ? (
+              <>
+                <svg
+                  className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Verifying...
+              </>
+            ) : (
+              "Verify OTP"
+            )}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-400 mb-2">Didn't receive the OTP?</p>
+          <button
+            onClick={handleResendOTP}
+            disabled={countdown > 0 || isLoading}
+            className={`text-purple-400 hover:text-purple-300 transition-colors ${
+              countdown > 0 || isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {countdown > 0 ? `Resend in ${countdown}s` : "Resend OTP"}
+          </button>
+        </div>
+
+        <div className="mt-6 text-center">
+          <button
+            onClick={() => setStep(1)}
+            className="text-gray-400 hover:text-gray-300 transition-colors"
+          >
+            ← Back to registration
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
@@ -196,10 +388,10 @@ const RegisterForm = () => {
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 ></path>
               </svg>
-              Creating Account...
+              Sending OTP...
             </>
           ) : (
-            "Register"
+            "Send OTP"
           )}
         </button>
       </form>
