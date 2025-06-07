@@ -4,6 +4,11 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { getEventById } from "../api/events";
+import {
+  createPaymentOrder,
+  verifyPayment,
+  loadRazorpayScript,
+} from "../api/payments";
 import { formatPrice } from "../utils/priceFormatter";
 import { formatDate } from "../utils/dateFormatter";
 
@@ -33,6 +38,9 @@ const CheckoutPage = () => {
       navigate("/");
       return;
     }
+
+    // Load Razorpay script
+    loadRazorpayScript();
 
     // Fetch event details
     const fetchEventDetails = async () => {
@@ -73,7 +81,7 @@ const CheckoutPage = () => {
     });
   };
 
-  const handleCreateTicket = async (e) => {
+  const handlePayment = async (e) => {
     e.preventDefault();
 
     if (!user) {
@@ -81,12 +89,25 @@ const CheckoutPage = () => {
       return;
     }
 
+    // Validate form
+    if (!formData.name || !formData.email || !formData.phone) {
+      setError("Please fill in all required fields");
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
 
-      // Create ticket payload
-      const ticketPayload = {
+      // Check if Razorpay is loaded
+      if (!window.Razorpay) {
+        throw new Error(
+          "Razorpay SDK failed to load. Please check your internet connection."
+        );
+      }
+
+      // Create payment order
+      const orderData = await createPaymentOrder({
         eventId,
         ticketTypeId,
         quantity,
@@ -95,46 +116,66 @@ const CheckoutPage = () => {
           email: formData.email,
           phone: formData.phone,
         },
+      });
+
+      // Configure Razorpay options
+      const options = {
+        key: orderData.key,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "EventTickets",
+        description: `${orderData.eventTitle} - ${orderData.ticketTypeName}`,
+        order_id: orderData.orderId,
+        handler: async function (response) {
+          try {
+            // Verify payment
+            const verificationResult = await verifyPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+
+            if (verificationResult.success) {
+              setPaymentSuccess(true);
+              // Navigate to success page after short delay
+              setTimeout(() => {
+                navigate("/my-tickets", {
+                  state: {
+                    successMessage:
+                      "Your tickets have been booked successfully!",
+                    ticketId: verificationResult.ticketId,
+                  },
+                });
+              }, 2000);
+            } else {
+              throw new Error("Payment verification failed");
+            }
+          } catch (verifyError) {
+            console.error("Payment verification error:", verifyError);
+            setError("Payment verification failed. Please contact support.");
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            setIsLoading(false);
+            setError("Payment was cancelled. Please try again.");
+          },
+        },
+        prefill: {
+          name: formData.name,
+          email: formData.email,
+          contact: formData.phone,
+        },
+        theme: {
+          color: "#7c3aed",
+        },
       };
 
-      console.log("Creating ticket:", ticketPayload);
-
-      // Send request to create ticket directly
-      const response = await fetch(
-        `${
-          process.env.REACT_APP_API_URL || "http://localhost:5000/api"
-        }/tickets/create`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(ticketPayload),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to create ticket");
-      }
-
-      const ticketResult = await response.json();
-      console.log("Ticket created successfully:", ticketResult);
-
-      setPaymentSuccess(true);
-      // Navigate to success page or ticket page after short delay
-      setTimeout(() => {
-        navigate("/my-tickets", {
-          state: {
-            successMessage: "Your ticket has been created successfully!",
-          },
-        });
-      }, 2000);
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
     } catch (err) {
-      console.error("Ticket creation error:", err);
-      setError(err.message || "Ticket creation failed. Please try again.");
-    } finally {
+      console.error("Payment initiation error:", err);
+      setError(err.message || "Payment initiation failed. Please try again.");
       setIsLoading(false);
     }
   };
@@ -196,10 +237,8 @@ const CheckoutPage = () => {
                 </svg>
               </div>
             </div>
-            <h2 className="text-xl font-semibold mb-2">Booking Successful!</h2>
-            <p>
-              Your tickets have been reserved. Redirecting to your tickets...
-            </p>
+            <h2 className="text-xl font-semibold mb-2">Payment Successful!</h2>
+            <p>Your tickets have been booked. Redirecting to your tickets...</p>
           </div>
         )}
 
@@ -284,16 +323,42 @@ const CheckoutPage = () => {
                   </p>
                 </div>
               </div>
+
+              <div className="bg-blue-900/30 border border-blue-500 text-blue-200 p-4 rounded-lg">
+                <div className="flex items-start">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 mr-2 mt-0.5 text-blue-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <div>
+                    <p className="text-sm font-medium mb-1">Secure Payment</p>
+                    <p className="text-xs">
+                      Your payment is secured by Razorpay. We accept all major
+                      cards, UPI, and net banking.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="bg-slate-800 rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-semibold text-white mb-6">
                 Contact Information
               </h2>
-              <form className="space-y-4" onSubmit={handleCreateTicket}>
+              <form className="space-y-4" onSubmit={handlePayment}>
                 <div className="form-group">
                   <label htmlFor="name" className="block text-gray-300 mb-2">
-                    Name
+                    Full Name *
                   </label>
                   <input
                     type="text"
@@ -301,7 +366,7 @@ const CheckoutPage = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Your name"
+                    placeholder="Enter your full name"
                     required
                     className="w-full bg-slate-700 border border-slate-600 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
@@ -309,7 +374,7 @@ const CheckoutPage = () => {
 
                 <div className="form-group">
                   <label htmlFor="email" className="block text-gray-300 mb-2">
-                    Email
+                    Email Address *
                   </label>
                   <input
                     type="email"
@@ -317,7 +382,7 @@ const CheckoutPage = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="your.email@example.com"
+                    placeholder="Enter your email address"
                     required
                     className="w-full bg-slate-700 border border-slate-600 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
@@ -325,7 +390,7 @@ const CheckoutPage = () => {
 
                 <div className="form-group">
                   <label htmlFor="phone" className="block text-gray-300 mb-2">
-                    Phone Number
+                    Phone Number *
                   </label>
                   <input
                     type="tel"
@@ -333,15 +398,33 @@ const CheckoutPage = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="(123) 456-7890"
+                    placeholder="Enter your phone number"
                     required
                     className="w-full bg-slate-700 border border-slate-600 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
 
+                <div className="bg-slate-700/50 rounded-lg p-4 mb-4">
+                  <h4 className="text-white font-medium mb-2">
+                    Payment Summary
+                  </h4>
+                  <div className="flex justify-between text-sm text-gray-300 mb-1">
+                    <span>Ticket Price × {quantity}</span>
+                    <span>{formatPrice(totalPrice)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-300 mb-1">
+                    <span>Processing Fee</span>
+                    <span>₹0</span>
+                  </div>
+                  <div className="border-t border-slate-600 pt-2 flex justify-between text-white font-medium">
+                    <span>Total Amount</span>
+                    <span>{formatPrice(totalPrice)}</span>
+                  </div>
+                </div>
+
                 <button
                   type="submit"
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-md transition-colors mt-6 flex items-center justify-center"
+                  className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-3 rounded-md transition-all duration-200 mt-6 flex items-center justify-center font-medium"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -369,9 +452,30 @@ const CheckoutPage = () => {
                       Processing...
                     </>
                   ) : (
-                    `Book Tickets (${formatPrice(totalPrice)})`
+                    <>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                        />
+                      </svg>
+                      Pay {formatPrice(totalPrice)}
+                    </>
                   )}
                 </button>
+
+                <p className="text-xs text-gray-400 text-center mt-4">
+                  By clicking "Pay", you agree to our terms and conditions. Your
+                  payment information is secure and encrypted.
+                </p>
               </form>
             </div>
           </div>
