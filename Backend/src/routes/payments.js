@@ -10,6 +10,13 @@ router.post(
   paymentController.createPaymentOrder
 );
 
+// Verify payment
+router.post(
+  "/verify-payment",
+  isAuthenticated,
+  paymentController.verifyPayment
+);
+
 // Razorpay webhook
 router.post(
   "/webhook",
