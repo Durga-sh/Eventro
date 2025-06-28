@@ -7,7 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import UserDashboardPage from "./pages/UserDashboardpage";
-import CreateEventPage from "./pages/CreateEventPage";
+import CreateEventPage from "./pages/createEventPage";
 import EventDetailsPage from "./pages/EventDetailsPage";
 import EditEventPage from "./pages/EditEventPage";
 import CheckoutPage from "./pages/CheckoutPage";
