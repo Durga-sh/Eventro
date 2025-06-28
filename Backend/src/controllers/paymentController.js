@@ -5,8 +5,8 @@ const { createTicketInternal } = require("./ticketController");
 const crypto = require("crypto");
 
 const razorpay = new Razorpay({
-  key_id: require("../config/config").RAZORPAY_KEY_ID,
-  key_secret: require("../config/config").RAZORPAY_KEY_SECRET,
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret:process.env.RAZORPAY_KEY_SECRET,
 });
 
 // Helper function to generate a short receipt ID

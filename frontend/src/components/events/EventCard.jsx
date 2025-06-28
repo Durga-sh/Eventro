@@ -3,19 +3,16 @@ import { formatDate } from "../../utils/dateFormatter";
 import { formatPrice } from "../../utils/priceFormatter";
 
 const EventCard = ({ event }) => {
-  // Get the lowest price ticket
   const lowestPrice =
     event.ticketTypes.length > 0
       ? Math.min(...event.ticketTypes.map((ticket) => ticket.price))
       : 0;
 
-  // Calculate available tickets
   const totalAvailable = event.ticketTypes.reduce(
     (sum, ticket) => sum + ticket.available,
     0
   );
 
-  // Status badge color mapping
   const statusColors = {
     published: "bg-green-500",
     draft: "bg-yellow-500",
@@ -23,8 +20,8 @@ const EventCard = ({ event }) => {
   };
 
   return (
-    <div className="bg-slate-800 rounded-xl overflow-hidden shadow-lg transition-transform hover:scale-[1.02] hover:shadow-purple-900/20">
-      <div className="relative h-48 overflow-hidden">
+    <div className="bg-slate-800 rounded-xl overflow-hidden shadow-lg transition-transform hover:scale-[1.02] hover:shadow-purple-900/20 h-full">
+      <div className="relative h-64 overflow-hidden">
         {event.image ? (
           <img
             src={event.image || "/placeholder.svg"}
@@ -33,14 +30,14 @@ const EventCard = ({ event }) => {
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-purple-900 to-slate-700 flex items-center justify-center">
-            <span className="text-4xl font-bold text-white">
+            <span className="text-6xl font-bold text-white">
               {event.title.charAt(0)}
             </span>
           </div>
         )}
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-4 right-4">
           <span
-            className={`text-xs font-medium px-2 py-1 rounded-full text-white ${
+            className={`text-sm font-medium px-3 py-1 rounded-full text-white ${
               statusColors[event.status] || "bg-slate-600"
             }`}
           >
@@ -49,15 +46,15 @@ const EventCard = ({ event }) => {
         </div>
       </div>
 
-      <div className="p-5">
-        <h3 className="text-lg font-semibold text-white mb-2 line-clamp-1">
+      <div className="p-6">
+        <h3 className="text-xl font-semibold text-white mb-3 line-clamp-2 min-h-[3.5rem]">
           {event.title}
         </h3>
 
-        <div className="flex items-center text-gray-400 text-sm mb-2">
+        <div className="flex items-center text-gray-400 text-base mb-3">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
+            className="h-5 w-5 mr-2"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -72,10 +69,10 @@ const EventCard = ({ event }) => {
           <span>{formatDate(event.startDate)}</span>
         </div>
 
-        <div className="flex items-center text-gray-400 text-sm mb-4">
+        <div className="flex items-center text-gray-400 text-base mb-6">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
+            className="h-5 w-5 mr-2"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -96,22 +93,22 @@ const EventCard = ({ event }) => {
           <span className="truncate">{event.location}</span>
         </div>
 
-        <div className="flex justify-between items-center mb-4">
-          <div className="text-white font-medium">
+        <div className="flex justify-between items-center mb-6">
+          <div className="text-white font-semibold text-lg">
             {lowestPrice > 0 ? (
               <span>From {formatPrice(lowestPrice)}</span>
             ) : (
               <span>Free</span>
             )}
           </div>
-          <div className="text-sm text-gray-400">
+          <div className="text-base text-gray-400">
             <span>{totalAvailable} tickets</span>
           </div>
         </div>
 
         <Link
           to={`/events/${event._id}`}
-          className="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-md transition-colors"
+          className="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-md transition-colors text-lg font-medium"
         >
           View Details
         </Link>

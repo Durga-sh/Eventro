@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -8,26 +8,26 @@ const Footer = () => {
   const isAdmin = user && user.role === "admin";
 
   return (
-    <footer className="bg-slate-900 border-t border-slate-800 pt-12 pb-6">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+    <footer className="bg-slate-900 border-t border-slate-800 pt-16 pb-8">
+      <div className="w-full px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           <div className="footer-section">
-            <h3 className="text-xl font-bold bg-gradient-to-r from-purple-500 to-violet-400 bg-clip-text text-transparent mb-4">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-500 to-violet-400 bg-clip-text text-transparent mb-6">
               Eventro
             </h3>
-            <p className="text-gray-400 mb-4">
+            <p className="text-gray-400 mb-6 text-lg">
               Your platform for creating, managing, and discovering amazing
               events.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex space-x-6">
               <a
                 href="#"
                 className="text-gray-400 hover:text-purple-400 transition-colors"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
+                  width="24"
+                  height="24"
                   fill="currentColor"
                   viewBox="0 0 16 16"
                 >
@@ -40,8 +40,8 @@ const Footer = () => {
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
+                  width="24"
+                  height="24"
                   fill="currentColor"
                   viewBox="0 0 16 16"
                 >
@@ -54,8 +54,8 @@ const Footer = () => {
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
+                  width="24"
+                  height="24"
                   fill="currentColor"
                   viewBox="0 0 16 16"
                 >
@@ -66,12 +66,14 @@ const Footer = () => {
           </div>
 
           <div className="footer-section">
-            <h3 className="text-white font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
+            <h3 className="text-white font-semibold mb-6 text-xl">
+              Quick Links
+            </h3>
+            <ul className="space-y-3">
               <li>
                 <Link
                   to="/"
-                  className="text-gray-400 hover:text-purple-400 transition-colors"
+                  className="text-gray-400 hover:text-purple-400 transition-colors text-lg"
                 >
                   Home
                 </Link>
@@ -79,7 +81,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/dashboard"
-                  className="text-gray-400 hover:text-purple-400 transition-colors"
+                  className="text-gray-400 hover:text-purple-400 transition-colors text-lg"
                 >
                   Dashboard
                 </Link>
@@ -88,7 +90,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/create-event"
-                    className="text-gray-400 hover:text-purple-400 transition-colors"
+                    className="text-gray-400 hover:text-purple-400 transition-colors text-lg"
                   >
                     Create Event
                   </Link>
@@ -97,7 +99,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/my-tickets"
-                  className="text-gray-400 hover:text-purple-400 transition-colors"
+                  className="text-gray-400 hover:text-purple-400 transition-colors text-lg"
                 >
                   My Tickets
                 </Link>
@@ -106,12 +108,12 @@ const Footer = () => {
           </div>
 
           <div className="footer-section">
-            <h3 className="text-white font-semibold mb-4">Contact</h3>
-            <div className="space-y-2">
-              <p className="flex items-center text-gray-400">
+            <h3 className="text-white font-semibold mb-6 text-xl">Contact</h3>
+            <div className="space-y-3">
+              <p className="flex items-center text-gray-400 text-lg">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2 text-purple-400"
+                  className="h-6 w-6 mr-3 text-purple-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -125,10 +127,10 @@ const Footer = () => {
                 </svg>
                 puhandurgsankarp@gmail.com
               </p>
-              <p className="flex items-center text-gray-400">
+              <p className="flex items-center text-gray-400 text-lg">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2 text-purple-400"
+                  className="h-6 w-6 mr-3 text-purple-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -140,14 +142,14 @@ const Footer = () => {
                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                   />
                 </svg>
-               +91 72058882737
+                +91 72058882737
               </p>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-slate-800 pt-6 text-center">
-          <p className="text-gray-500">
+        <div className="border-t border-slate-800 pt-8 text-center">
+          <p className="text-gray-500 text-lg">
             &copy; {currentYear} EventHub. All rights reserved.
           </p>
         </div>

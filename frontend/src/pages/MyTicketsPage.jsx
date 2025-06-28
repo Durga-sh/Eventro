@@ -31,7 +31,6 @@ const MyTicketsPage = () => {
 
     fetchUserTickets();
 
-    // Clear success message after 5 seconds
     if (successMessage) {
       const timer = setTimeout(() => {
         setSuccessMessage(null);
@@ -54,25 +53,25 @@ const MyTicketsPage = () => {
 
   return (
     <motion.div
-      className="bg-slate-900 min-h-screen py-8 px-4"
+      className="bg-slate-900 min-h-screen"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <motion.div
-        className="container mx-auto"
+        className="w-full px-8 py-8"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <motion.div
-          className="bg-gradient-to-r from-slate-800 to-slate-800/80 rounded-xl p-6 mb-8 shadow-lg"
+          className="bg-gradient-to-r from-slate-800 to-slate-800/80 rounded-xl p-8 mb-8 shadow-lg"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
           <motion.h1
-            className="text-2xl font-bold text-white"
+            className="text-3xl font-bold text-white"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -83,7 +82,7 @@ const MyTicketsPage = () => {
 
         {successMessage && (
           <motion.div
-            className="bg-green-900/30 border border-green-500 text-green-200 p-4 rounded-lg mb-6"
+            className="bg-green-900/30 border border-green-500 text-green-200 p-6 rounded-lg mb-8"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
