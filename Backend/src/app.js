@@ -19,7 +19,7 @@ connectDB();
 // Middlewares
 app.use(
   cors({
-    origin: "http://localhost:3000" , // Your frontend URL
+    origin: "https://eventro-ivory.vercel.app", // Your frontend URL
     credentials: true,
   })
 );

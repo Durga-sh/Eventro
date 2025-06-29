@@ -77,6 +77,7 @@ export const resendOTP = async (tempUserId) => {
 // Login user
 export const login = async (credentials) => {
   try {
+    console.log("Sending login request with credentials:", credentials);
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
       headers: {
@@ -85,14 +86,19 @@ export const login = async (credentials) => {
       body: JSON.stringify(credentials),
     });
 
+    console.log("Response status:", response.status);
     const data = await response.json();
+    console.log("Response data:", data);
 
     if (!response.ok) {
-      throw new Error(data.message || "Login failed");
+      throw new Error(
+        data.message || `Login failed with status ${response.status}`
+      );
     }
 
     return data;
   } catch (error) {
+    console.error("Login error:", error);
     throw error;
   }
 };

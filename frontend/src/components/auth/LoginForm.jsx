@@ -26,7 +26,7 @@ const LoginForm = () => {
     setFormError("");
 
     try {
-      const { user, token } = await login(formData.email, formData.password);
+      const { user, token } = await login(formData);
       loginUser(user, token);
       navigate("/dashboard");
     } catch (err) {
