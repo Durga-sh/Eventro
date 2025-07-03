@@ -67,37 +67,29 @@ const UserDashboardPage = () => {
       transition: { type: "spring", stiffness: 100 },
     },
     hover: {
-      scale: 1.03,
-      boxShadow: "0 10px 20px rgba(138, 75, 175, 0.2)",
+      scale: 1.02,
+      boxShadow: "0 20px 40px rgba(138, 75, 175, 0.15)",
       transition: { type: "spring", stiffness: 400, damping: 10 },
-    },
-  };
-
-  const fadeInUpVariants = {
-    hidden: { y: 30, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: "spring", stiffness: 100, damping: 15 },
     },
   };
 
   return (
     <div className="bg-slate-900 min-h-screen">
-      <div className="w-full px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-gradient-to-r from-slate-800 to-slate-800/80 rounded-xl p-8 mb-8 shadow-lg"
+          className="bg-gradient-to-r from-slate-800 to-slate-800/80 rounded-2xl p-6 sm:p-8 mb-8 shadow-xl"
         >
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <motion.h1
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="text-3xl font-bold text-white"
+                className="text-2xl sm:text-3xl font-bold text-white"
               >
                 Dashboard
               </motion.h1>
@@ -105,7 +97,7 @@ const UserDashboardPage = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="text-gray-400 text-lg"
+                className="text-gray-400 text-base sm:text-lg mt-1"
               >
                 Welcome back, {user?.name || "User"}!
               </motion.p>
@@ -120,11 +112,11 @@ const UserDashboardPage = () => {
               >
                 <Link
                   to="/create-event"
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-md transition-colors flex items-center text-lg"
+                  className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-xl transition-all duration-300 flex items-center font-semibold shadow-lg hover:shadow-xl"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 mr-2"
+                    className="h-5 w-5 mr-2"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -143,19 +135,20 @@ const UserDashboardPage = () => {
           </div>
         </motion.div>
 
+        {/* Stats Cards */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-3 gap-8 mb-12"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
         >
           <motion.div
             variants={cardVariants}
             whileHover="hover"
-            className="bg-slate-800 rounded-xl p-8 shadow-lg hover:shadow-purple-900/10 transition-all"
+            className="bg-slate-800 rounded-2xl p-6 shadow-xl hover:shadow-purple-900/10 transition-all duration-300"
           >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-white">My Tickets</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white">My Tickets</h3>
               <motion.div
                 initial={{ rotate: -10, scale: 0.9 }}
                 animate={{ rotate: 0, scale: 1 }}
@@ -165,7 +158,7 @@ const UserDashboardPage = () => {
                   damping: 20,
                   delay: 0.3,
                 }}
-                className="w-12 h-12 bg-purple-900/30 rounded-full flex items-center justify-center"
+                className="w-12 h-12 bg-purple-900/30 rounded-xl flex items-center justify-center"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -187,43 +180,46 @@ const UserDashboardPage = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4 }}
-              className="text-4xl font-bold text-white mb-6"
+              className="text-3xl font-bold text-white mb-4"
             >
               {userStats.ticketsCount}
             </motion.p>
             <Link
               to="/my-tickets"
-              className="text-purple-400 hover:text-purple-300 transition-colors flex items-center group text-lg"
+              className="text-purple-400 hover:text-purple-300 transition-colors flex items-center group"
             >
               View all tickets
-              <motion.svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 ml-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+              <motion.div
+                className="h-4 w-4 ml-2"
                 initial={{ x: 0 }}
-                animate={{ x: 0 }}
                 whileHover={{ x: 3 }}
                 transition={{ type: "spring", stiffness: 400 }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </motion.svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </motion.div>
             </Link>
           </motion.div>
 
           <motion.div
             variants={cardVariants}
             whileHover="hover"
-            className="bg-slate-800 rounded-xl p-8 shadow-lg hover:shadow-purple-900/10 transition-all"
+            className="bg-slate-800 rounded-2xl p-6 shadow-xl hover:shadow-purple-900/10 transition-all duration-300"
           >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-white">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white">
                 Events Created
               </h3>
               <motion.div
@@ -235,7 +231,7 @@ const UserDashboardPage = () => {
                   damping: 20,
                   delay: 0.4,
                 }}
-                className="w-12 h-12 bg-purple-900/30 rounded-full flex items-center justify-center"
+                className="w-12 h-12 bg-purple-900/30 rounded-xl flex items-center justify-center"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -257,43 +253,46 @@ const UserDashboardPage = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5 }}
-              className="text-4xl font-bold text-white mb-6"
+              className="text-3xl font-bold text-white mb-4"
             >
               {userStats.eventsCreated}
             </motion.p>
             <Link
               to="/my-events"
-              className="text-purple-400 hover:text-purple-300 transition-colors flex items-center group text-lg"
+              className="text-purple-400 hover:text-purple-300 transition-colors flex items-center group"
             >
               Manage events
-              <motion.svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 ml-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+              <motion.div
+                className="h-4 w-4 ml-2"
                 initial={{ x: 0 }}
-                animate={{ x: 0 }}
                 whileHover={{ x: 3 }}
                 transition={{ type: "spring", stiffness: 400 }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </motion.svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </motion.div>
             </Link>
           </motion.div>
 
           <motion.div
             variants={cardVariants}
             whileHover="hover"
-            className="bg-slate-800 rounded-xl p-8 shadow-lg hover:shadow-purple-900/10 transition-all"
+            className="bg-slate-800 rounded-2xl p-6 shadow-xl hover:shadow-purple-900/10 transition-all duration-300"
           >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-white">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white">
                 Total Revenue
               </h3>
               <motion.div
@@ -305,7 +304,7 @@ const UserDashboardPage = () => {
                   damping: 20,
                   delay: 0.5,
                 }}
-                className="w-12 h-12 bg-purple-900/30 rounded-full flex items-center justify-center"
+                className="w-12 h-12 bg-purple-900/30 rounded-xl flex items-center justify-center"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -327,73 +326,27 @@ const UserDashboardPage = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6 }}
-              className="text-4xl font-bold text-white mb-6"
+              className="text-3xl font-bold text-white mb-4"
             >
               $0.00
             </motion.p>
             <Link
               to="/reports"
-              className="text-purple-400 hover:text-purple-300 transition-colors flex items-center group text-lg"
+              className="text-purple-400 hover:text-purple-300 transition-colors flex items-center group"
             >
               View reports
-              <motion.svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 ml-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+              <motion.div
+                className="h-4 w-4 ml-2"
                 initial={{ x: 0 }}
-                animate={{ x: 0 }}
                 whileHover={{ x: 3 }}
                 transition={{ type: "spring", stiffness: 400 }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </motion.svg>
-            </Link>
-          </motion.div>
-        </motion.div>
-
-        {/* All Events Section */}
-        <motion.div
-          variants={fadeInUpVariants}
-          initial="hidden"
-          animate="visible"
-          className="mb-12"
-        >
-          <div className="flex justify-between items-center mb-8">
-            <motion.h2
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-2xl font-bold text-white"
-            >
-              All Events
-            </motion.h2>
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <Link
-                to="/events"
-                className="text-purple-400 hover:text-purple-300 transition-colors flex items-center group text-lg"
-              >
-                View All
-                <motion.svg
+                <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 ml-2"
+                  className="h-4 w-4"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  initial={{ x: 0 }}
-                  animate={{ x: 0 }}
-                  whileHover={{ x: 3 }}
-                  transition={{ type: "spring", stiffness: 400 }}
                 >
                   <path
                     strokeLinecap="round"
@@ -401,7 +354,59 @@ const UserDashboardPage = () => {
                     strokeWidth={2}
                     d="M9 5l7 7-7 7"
                   />
-                </motion.svg>
+                </svg>
+              </motion.div>
+            </Link>
+          </motion.div>
+        </motion.div>
+
+        {/* All Events Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mb-12"
+        >
+          <div className="flex justify-between items-center mb-8">
+            <motion.h2
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-2xl font-bold text-white"
+            >
+              Featured Events
+            </motion.h2>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <Link
+                to="/events"
+                className="text-purple-400 hover:text-purple-300 transition-colors flex items-center group"
+              >
+                View All
+                <motion.div
+                  className="h-4 w-4 ml-2"
+                  initial={{ x: 0 }}
+                  whileHover={{ x: 3 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </motion.div>
               </Link>
             </motion.div>
           </div>
@@ -436,7 +441,7 @@ const UserDashboardPage = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-red-900/30 border border-red-500 text-red-200 p-6 rounded-lg"
+              className="bg-red-900/30 border border-red-500 text-red-200 p-6 rounded-2xl"
             >
               <h3 className="text-xl font-semibold mb-2">Error</h3>
               <p>{error}</p>
@@ -446,18 +451,54 @@ const UserDashboardPage = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: "spring", stiffness: 100 }}
-              className="bg-slate-800 p-8 rounded-xl text-center"
+              className="bg-slate-800 p-12 rounded-2xl text-center shadow-xl"
             >
-              <p className="text-gray-400 mb-4">No events are available yet.</p>
+              <div className="w-24 h-24 mx-auto mb-6 bg-slate-700/50 rounded-full flex items-center justify-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12 w-12 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-3">
+                No Events Available
+              </h3>
+              <p className="text-gray-400 mb-6 max-w-md mx-auto">
+                No events are available yet. Create your first event to get
+                started!
+              </p>
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Link
                   to="/create-event"
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors"
+                  className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-8 py-3 rounded-xl transition-all duration-300 inline-flex items-center font-semibold shadow-lg hover:shadow-xl"
                 >
                   Create an Event
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 ml-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
                 </Link>
               </motion.div>
             </motion.div>
@@ -466,7 +507,7 @@ const UserDashboardPage = () => {
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="grid grid-cols-3 gap-8"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
               {allEvents.slice(0, 6).map((event, index) => (
                 <motion.div
@@ -480,102 +521,6 @@ const UserDashboardPage = () => {
               ))}
             </motion.div>
           )}
-        </motion.div>
-
-        {/* Quick Actions Section */}
-        <motion.div
-          variants={fadeInUpVariants}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.4 }}
-          className="mb-12"
-        >
-          <motion.h2
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-            className="text-2xl font-bold text-white mb-8"
-          >
-            Quick Actions
-          </motion.h2>
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-3 gap-8"
-          >
-            <motion.div
-              variants={cardVariants}
-              whileHover="hover"
-              className="bg-slate-800 rounded-xl p-8 shadow-lg hover:shadow-purple-900/10 transition-all"
-            >
-              <h3 className="text-xl font-semibold text-white mb-4">
-                Browse Events
-              </h3>
-              <p className="text-gray-400 mb-6">
-                Discover upcoming events in your area
-              </p>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link
-                  to="/events"
-                  className="bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-md transition-colors inline-block"
-                >
-                  Browse
-                </Link>
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              variants={cardVariants}
-              whileHover="hover"
-              className="bg-slate-800 rounded-xl p-8 shadow-lg hover:shadow-purple-900/10 transition-all"
-            >
-              <h3 className="text-xl font-semibold text-white mb-4">
-                My Profile
-              </h3>
-              <p className="text-gray-400 mb-6">
-                Update your personal information
-              </p>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link
-                  to="/profile"
-                  className="bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-md transition-colors inline-block"
-                >
-                  View Profile
-                </Link>
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              variants={cardVariants}
-              whileHover="hover"
-              className="bg-slate-800 rounded-xl p-8 shadow-lg hover:shadow-purple-900/10 transition-all"
-            >
-              <h3 className="text-xl font-semibold text-white mb-4">
-                Event Reports
-              </h3>
-              <p className="text-gray-400 mb-6">
-                See analytics for your events
-              </p>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link
-                  to="/reports"
-                  className="bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-md transition-colors inline-block"
-                >
-                  View Reports
-                </Link>
-              </motion.div>
-            </motion.div>
-          </motion.div>
         </motion.div>
       </div>
     </div>
