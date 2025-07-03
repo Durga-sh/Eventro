@@ -40,6 +40,17 @@ const MyTicketsPage = () => {
     }
   }, [successMessage]);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        when: "beforeChildren",
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
   return (
     <motion.div
       className="bg-slate-900 min-h-screen"
@@ -47,62 +58,43 @@ const MyTicketsPage = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <motion.div
+        className="w-full px-8 py-8"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <motion.div
-          className="bg-gradient-to-r from-slate-800 to-slate-800/80 rounded-2xl p-6 sm:p-8 mb-8 shadow-xl"
+          className="bg-gradient-to-r from-slate-800 to-slate-800/80 rounded-xl p-8 mb-8 shadow-lg"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
           <motion.h1
-            className="text-2xl sm:text-3xl font-bold text-white"
+            className="text-3xl font-bold text-white"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
             My Tickets
           </motion.h1>
-          <motion.p
-            className="text-gray-400 text-base sm:text-lg mt-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            Manage and view all your event tickets
-          </motion.p>
         </motion.div>
 
         {successMessage && (
           <motion.div
-            className="bg-green-900/30 border border-green-500 text-green-200 p-6 rounded-2xl mb-8 shadow-lg"
+            className="bg-green-900/30 border border-green-500 text-green-200 p-6 rounded-lg mb-8"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
           >
-            <div className="flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 mr-3 text-green-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              {successMessage}
-            </div>
+            {successMessage}
           </motion.div>
         )}
 
         {loading ? (
           <motion.div
-            className="flex justify-center items-center py-20"
+            className="flex justify-center items-center py-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
@@ -114,13 +106,13 @@ const MyTicketsPage = () => {
                   repeat: Number.POSITIVE_INFINITY,
                   ease: "linear",
                 }}
-                className="h-16 w-16 rounded-full border-4 border-t-purple-500 border-r-transparent border-b-transparent border-l-transparent"
+                className="h-12 w-12 rounded-full border-4 border-t-purple-500 border-r-transparent border-b-transparent border-l-transparent"
               ></motion.div>
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="mt-6 text-gray-400 text-lg"
+                className="mt-4 text-gray-400"
               >
                 Loading your tickets...
               </motion.p>
@@ -128,29 +120,13 @@ const MyTicketsPage = () => {
           </motion.div>
         ) : error ? (
           <motion.div
-            className="bg-red-900/30 border border-red-500 text-red-200 p-8 rounded-2xl shadow-xl"
+            className="bg-red-900/30 border border-red-500 text-red-200 p-6 rounded-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: "spring", stiffness: 100 }}
           >
-            <div className="flex items-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 mr-3 text-red-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <h3 className="text-xl font-semibold">Error Loading Tickets</h3>
-            </div>
-            <p className="text-lg">{error}</p>
+            <h3 className="text-xl font-semibold mb-2">Error</h3>
+            <p>{error}</p>
           </motion.div>
         ) : (
           <motion.div
@@ -161,7 +137,7 @@ const MyTicketsPage = () => {
             <TicketList tickets={tickets} />
           </motion.div>
         )}
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
