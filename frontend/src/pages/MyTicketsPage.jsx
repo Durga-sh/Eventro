@@ -59,19 +59,19 @@ const MyTicketsPage = () => {
       transition={{ duration: 0.5 }}
     >
       <motion.div
-        className="w-full px-8 py-8"
+        className="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <motion.div
-          className="bg-gradient-to-r from-slate-800 to-slate-800/80 rounded-xl p-8 mb-8 shadow-lg"
+          className="bg-gradient-to-r from-slate-800 to-slate-800/80 rounded-xl p-4 sm:p-6 lg:p-8 mb-6 lg:mb-8 shadow-lg"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
           <motion.h1
-            className="text-3xl font-bold text-white"
+            className="text-2xl sm:text-3xl font-bold text-white"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -82,19 +82,19 @@ const MyTicketsPage = () => {
 
         {successMessage && (
           <motion.div
-            className="bg-green-900/30 border border-green-500 text-green-200 p-6 rounded-lg mb-8"
+            className="bg-green-900/30 border border-green-500 text-green-200 p-4 sm:p-6 rounded-lg mb-6 lg:mb-8"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
           >
-            {successMessage}
+            <p className="text-sm sm:text-base">{successMessage}</p>
           </motion.div>
         )}
 
         {loading ? (
           <motion.div
-            className="flex justify-center items-center py-12"
+            className="flex justify-center items-center py-12 sm:py-16 lg:py-20"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
@@ -106,13 +106,13 @@ const MyTicketsPage = () => {
                   repeat: Number.POSITIVE_INFINITY,
                   ease: "linear",
                 }}
-                className="h-12 w-12 rounded-full border-4 border-t-purple-500 border-r-transparent border-b-transparent border-l-transparent"
+                className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-4 border-t-purple-500 border-r-transparent border-b-transparent border-l-transparent"
               ></motion.div>
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="mt-4 text-gray-400"
+                className="mt-4 text-gray-400 text-sm sm:text-base"
               >
                 Loading your tickets...
               </motion.p>
@@ -120,13 +120,13 @@ const MyTicketsPage = () => {
           </motion.div>
         ) : error ? (
           <motion.div
-            className="bg-red-900/30 border border-red-500 text-red-200 p-6 rounded-lg"
+            className="bg-red-900/30 border border-red-500 text-red-200 p-4 sm:p-6 rounded-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: "spring", stiffness: 100 }}
           >
-            <h3 className="text-xl font-semibold mb-2">Error</h3>
-            <p>{error}</p>
+            <h3 className="text-lg sm:text-xl font-semibold mb-2">Error</h3>
+            <p className="text-sm sm:text-base">{error}</p>
           </motion.div>
         ) : (
           <motion.div

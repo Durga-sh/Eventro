@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { getTicketById } from "../api/tickets";
-import { formatDate} from "../utils/dateFormatter";
+import { formatDate } from "../utils/dateFormatter";
 import { formatPrice } from "../utils/priceFormatter";
 import TicketQRCode from "../components/tickets/TicketQRcode";
 
@@ -62,7 +62,7 @@ const TicketDetailPage = () => {
   };
 
   return (
-    <div className="bg-slate-900 min-h-screen py-8 px-4">
+    <div className="bg-slate-900 min-h-screen py-4 sm:py-6 lg:py-8 px-4">
       <div className="container mx-auto max-w-4xl">
         <AnimatePresence mode="wait">
           {loading ? (
@@ -71,7 +71,7 @@ const TicketDetailPage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex flex-col items-center justify-center py-20"
+              className="flex flex-col items-center justify-center py-16 sm:py-20"
             >
               <motion.div
                 animate={{ rotate: 360 }}
@@ -80,13 +80,13 @@ const TicketDetailPage = () => {
                   repeat: Number.POSITIVE_INFINITY,
                   ease: "linear",
                 }}
-                className="h-12 w-12 rounded-full border-4 border-t-purple-500 border-r-transparent border-b-transparent border-l-transparent"
+                className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-4 border-t-purple-500 border-r-transparent border-b-transparent border-l-transparent"
               ></motion.div>
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="mt-4 text-gray-400"
+                className="mt-4 text-gray-400 text-sm sm:text-base"
               >
                 Loading ticket details...
               </motion.p>
@@ -98,10 +98,10 @@ const TicketDetailPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ type: "spring", stiffness: 100 }}
-              className="bg-red-900/30 border border-red-500 text-red-200 p-6 rounded-lg my-8"
+              className="bg-red-900/30 border border-red-500 text-red-200 p-4 sm:p-6 rounded-lg my-6 sm:my-8"
             >
-              <h3 className="text-xl font-semibold mb-2">Error</h3>
-              <p>{error}</p>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2">Error</h3>
+              <p className="text-sm sm:text-base">{error}</p>
               <motion.div
                 className="mt-4"
                 initial={{ opacity: 0 }}
@@ -110,7 +110,7 @@ const TicketDetailPage = () => {
               >
                 <Link
                   to="/my-tickets"
-                  className="text-purple-400 hover:text-purple-300 transition-colors flex items-center w-fit"
+                  className="text-purple-400 hover:text-purple-300 transition-colors flex items-center w-fit text-sm sm:text-base"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -137,10 +137,12 @@ const TicketDetailPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ type: "spring", stiffness: 100 }}
-              className="bg-yellow-900/30 border border-yellow-500 text-yellow-200 p-6 rounded-lg my-8"
+              className="bg-yellow-900/30 border border-yellow-500 text-yellow-200 p-4 sm:p-6 rounded-lg my-6 sm:my-8"
             >
-              <h3 className="text-xl font-semibold mb-2">Not Found</h3>
-              <p>Ticket not found</p>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2">
+                Not Found
+              </h3>
+              <p className="text-sm sm:text-base">Ticket not found</p>
               <motion.div
                 className="mt-4"
                 initial={{ opacity: 0 }}
@@ -149,7 +151,7 @@ const TicketDetailPage = () => {
               >
                 <Link
                   to="/my-tickets"
-                  className="text-purple-400 hover:text-purple-300 transition-colors flex items-center w-fit"
+                  className="text-purple-400 hover:text-purple-300 transition-colors flex items-center w-fit text-sm sm:text-base"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -179,13 +181,13 @@ const TicketDetailPage = () => {
             >
               <motion.div
                 variants={itemVariants}
-                className="mb-6"
+                className="mb-4 sm:mb-6"
                 whileHover={{ x: -5 }}
                 transition={{ type: "spring", stiffness: 400 }}
               >
                 <Link
                   to="/my-tickets"
-                  className="text-purple-400 hover:text-purple-300 transition-colors flex items-center w-fit"
+                  className="text-purple-400 hover:text-purple-300 transition-colors flex items-center w-fit text-sm sm:text-base"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -223,7 +225,7 @@ const TicketDetailPage = () => {
                   transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
                 >
                   <motion.span
-                    className="inline-block px-3 py-1 rounded-full text-sm font-medium"
+                    className="inline-block px-3 py-1 rounded-full text-xs sm:text-sm font-medium"
                     initial={{ scale: 0.8 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.3, type: "spring", stiffness: 300 }}
@@ -238,11 +240,11 @@ const TicketDetailPage = () => {
 
                 {/* Ticket Header */}
                 <motion.div
-                  className="p-6 border-b border-slate-700 bg-gradient-to-r from-slate-800 to-slate-800/80"
+                  className="p-4 sm:p-6 border-b border-slate-700 bg-gradient-to-r from-slate-800 to-slate-800/80"
                   variants={itemVariants}
                 >
                   <motion.h1
-                    className="text-2xl font-bold text-white mb-2"
+                    className="text-xl sm:text-2xl font-bold text-white mb-2"
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
@@ -250,7 +252,7 @@ const TicketDetailPage = () => {
                     {ticket.event.title}
                   </motion.h1>
                   <motion.p
-                    className="text-gray-400 mb-1"
+                    className="text-gray-400 mb-1 text-sm sm:text-base"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.4 }}
@@ -259,14 +261,14 @@ const TicketDetailPage = () => {
                     {formatDate(ticket.event.startDate)}
                   </motion.p>
                   <motion.p
-                    className="text-gray-400 flex items-center"
+                    className="text-gray-400 flex items-center text-sm sm:text-base"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 mr-1"
+                      className="h-4 w-4 mr-1 flex-shrink-0"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -284,24 +286,24 @@ const TicketDetailPage = () => {
                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    {ticket.event.location}
+                    <span className="truncate">{ticket.event.location}</span>
                   </motion.p>
                 </motion.div>
 
                 {/* Ticket Body */}
-                <motion.div className="p-6" variants={itemVariants}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <motion.div className="p-4 sm:p-6" variants={itemVariants}>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                     {/* Ticket Information */}
                     <motion.div variants={itemVariants}>
                       <motion.h3
-                        className="text-lg font-semibold text-white mb-4 flex items-center"
+                        className="text-base sm:text-lg font-semibold text-white mb-4 flex items-center"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.6 }}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 mr-2 text-purple-400"
+                          className="h-5 w-5 mr-2 text-purple-400 flex-shrink-0"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -316,7 +318,7 @@ const TicketDetailPage = () => {
                         Ticket Information
                       </motion.h3>
                       <motion.div
-                        className="grid grid-cols-2 gap-4"
+                        className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
@@ -333,7 +335,7 @@ const TicketDetailPage = () => {
                           <span className="block text-xs text-gray-400 mb-1">
                             Ticket Type
                           </span>
-                          <span className="block text-white font-medium">
+                          <span className="block text-white font-medium text-sm sm:text-base">
                             {ticket.ticketType}
                           </span>
                         </motion.div>
@@ -345,7 +347,7 @@ const TicketDetailPage = () => {
                           <span className="block text-xs text-gray-400 mb-1">
                             Quantity
                           </span>
-                          <span className="block text-white font-medium">
+                          <span className="block text-white font-medium text-sm sm:text-base">
                             {ticket.quantity}
                           </span>
                         </motion.div>
@@ -357,7 +359,7 @@ const TicketDetailPage = () => {
                           <span className="block text-xs text-gray-400 mb-1">
                             Unit Price
                           </span>
-                          <span className="block text-white font-medium">
+                          <span className="block text-white font-medium text-sm sm:text-base">
                             {formatPrice(ticket.unitPrice)}
                           </span>
                         </motion.div>
@@ -369,7 +371,7 @@ const TicketDetailPage = () => {
                           <span className="block text-xs text-gray-400 mb-1">
                             Total
                           </span>
-                          <span className="block text-white font-medium">
+                          <span className="block text-white font-medium text-sm sm:text-base">
                             {formatPrice(ticket.totalAmount)}
                           </span>
                         </motion.div>
@@ -381,7 +383,7 @@ const TicketDetailPage = () => {
                           <span className="block text-xs text-gray-400 mb-1">
                             Purchase Date
                           </span>
-                          <span className="block text-white font-medium">
+                          <span className="block text-white font-medium text-sm sm:text-base">
                             {formatDate(ticket.purchasedAt)}
                           </span>
                         </motion.div>
@@ -393,7 +395,7 @@ const TicketDetailPage = () => {
                           <span className="block text-xs text-gray-400 mb-1">
                             Ticket Number
                           </span>
-                          <span className="block text-white font-medium">
+                          <span className="block text-white font-medium text-sm sm:text-base truncate">
                             {ticket.ticketNumber}
                           </span>
                         </motion.div>
@@ -406,14 +408,14 @@ const TicketDetailPage = () => {
                       className="bg-slate-700/20 p-4 rounded-xl flex flex-col items-center"
                     >
                       <motion.h3
-                        className="text-lg font-semibold text-white mb-2 flex items-center"
+                        className="text-base sm:text-lg font-semibold text-white mb-2 flex items-center"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.8 }}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 mr-2 text-purple-400"
+                          className="h-5 w-5 mr-2 text-purple-400 flex-shrink-0"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -428,7 +430,7 @@ const TicketDetailPage = () => {
                         Entry Pass
                       </motion.h3>
                       <motion.p
-                        className="text-gray-400 text-sm mb-4 text-center"
+                        className="text-gray-400 text-xs sm:text-sm mb-4 text-center"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.9 }}
@@ -443,6 +445,7 @@ const TicketDetailPage = () => {
                           type: "spring",
                           stiffness: 200,
                         }}
+                        className="w-full max-w-[200px] sm:max-w-[250px]"
                       >
                         <TicketQRCode qrData={ticket.qrCode} />
                       </motion.div>
@@ -458,7 +461,7 @@ const TicketDetailPage = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.1 }}
                 >
-                  <p className="text-gray-400 text-xs">
+                  <p className="text-gray-400 text-xs sm:text-sm">
                     This ticket is subject to the event terms and conditions.
                     Non-refundable.
                   </p>
