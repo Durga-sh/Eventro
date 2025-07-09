@@ -1,28 +1,62 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { forgotPassword } from "../api/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { forgotPassword, verifyPasswordResetOTP } from "../api/auth";
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [tempResetId, setTempResetId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
     setMessage("");
 
     try {
-      await forgotPassword(email);
-      setIsSubmitted(true);
-      setMessage(
-        "Password reset email sent successfully! Please check your email."
-      );
+      const response = await forgotPassword(email);
+      setTempResetId(response.tempResetId);
+      setIsOtpSent(true);
+      setMessage("OTP sent to your email. Please enter the OTP to proceed.");
     } catch (err) {
-      setError(err.message || "Failed to send reset email. Please try again.");
+      setError(err.message || "Failed to send OTP. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOtpSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    setMessage("");
+
+    try {
+      await verifyPasswordResetOTP(tempResetId, otp);
+      navigate("/reset-password", { state: { tempResetId, email } });
+    } catch (err) {
+      setError(err.message || "Invalid or expired OTP. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setIsLoading(true);
+    setError("");
+    setMessage("");
+
+    try {
+      const response = await forgotPassword(email);
+      setTempResetId(response.tempResetId);
+      setMessage("New OTP sent to your email.");
+    } catch (err) {
+      setError(err.message || "Failed to resend OTP. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -39,10 +73,10 @@ const ForgotPasswordPage = () => {
             </h2>
           </div>
 
-          {!isSubmitted ? (
+          {!isOtpSent ? (
             <>
               <p className="text-gray-300 mb-6 text-center">
-                Enter your email address and we'll send you a link to reset your
+                Enter your email address and we'll send you an OTP to reset your
                 password.
               </p>
 
@@ -52,7 +86,13 @@ const ForgotPasswordPage = () => {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              {message && (
+                <div className="bg-green-900/30 border border-green-500 text-green-200 p-4 rounded-md mb-6">
+                  {message}
+                </div>
+              )}
+
+              <form onSubmit={handleEmailSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="email" className="block text-gray-300 mb-2">
                     Email Address
@@ -98,44 +138,90 @@ const ForgotPasswordPage = () => {
                       Sending...
                     </>
                   ) : (
-                    "Send Reset Email"
+                    "Send OTP"
                   )}
                 </button>
               </form>
             </>
           ) : (
-            <div className="text-center">
-              <div className="bg-green-900/30 border border-green-500 text-green-200 p-4 rounded-md mb-6">
-                <svg
-                  className="w-6 h-6 mx-auto mb-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                {message}
-              </div>
-              <p className="text-gray-300 mb-6">
-                Check your email for a password reset link. If you don't see it,
-                check your spam folder.
+            <>
+              <p className="text-gray-300 mb-6 text-center">
+                Enter the OTP sent to your email.
               </p>
-              <button
-                onClick={() => {
-                  setIsSubmitted(false);
-                  setEmail("");
-                  setMessage("");
-                }}
-                className="text-purple-400 hover:text-purple-300 transition-colors"
-              >
-                Didn't receive the email? Try again
-              </button>
-            </div>
+
+              {error && (
+                <div className="bg-red-900/30 border border-red-500 text-red-200 p-4 rounded-md mb-6">
+                  {error}
+                </div>
+              )}
+
+              {message && (
+                <div className="bg-green-900/30 border border-green-500 text-green-200 p-4 rounded-md mb-6">
+                  {message}
+                </div>
+              )}
+
+              <form onSubmit={handleOtpSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="otp" className="block text-gray-300 mb-2">
+                    OTP
+                  </label>
+                  <input
+                    type="text"
+                    id="otp"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    required
+                    className="w-full bg-slate-700 border border-slate-600 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="Enter 6-digit OTP"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-md transition-colors flex items-center justify-center disabled:opacity-50"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Verifying...
+                    </>
+                  ) : (
+                    "Verify OTP"
+                  )}
+                </button>
+              </form>
+
+              <div className="mt-4 text-center">
+                <button
+                  onClick={handleResendOtp}
+                  className="text-purple-400 hover:text-purple-300 transition-colors"
+                  disabled={isLoading}
+                >
+                  Resend OTP
+                </button>
+              </div>
+            </>
           )}
 
           <div className="mt-6 text-center">

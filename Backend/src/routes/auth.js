@@ -4,8 +4,8 @@ const passport = require("passport");
 const authController = require("../controllers/authController");
 const { isAuthenticated, generateToken } = require("../middleware/auth");
 const { OAuth2Client } = require("google-auth-library");
-const User = require("../models/User"); // Make sure to import your User model
-const config = require("../config/config"); // Import your config file
+const User = require("../models/User");
+const config = require("../config/config");
 
 // Initialize the Google OAuth client
 const client = new OAuth2Client(config.GOOGLE_CLIENT_ID);
@@ -24,8 +24,11 @@ router.post("/login", authController.login);
 
 // Forgot Password routes
 router.post("/forgot-password", authController.forgotPassword);
+router.post(
+  "/verify-password-reset-otp",
+  authController.verifyPasswordResetOTP
+);
 router.post("/reset-password", authController.resetPassword);
-router.get("/validate-reset-token/:token", authController.validateResetToken);
 
 // Google OAuth routes
 router.get(
@@ -44,12 +47,14 @@ router.get(
 // Google One-Tap/Sign-in with Google Button verification
 router.post("/google/verify", async (req, res) => {
   try {
-    console.log("Google verification request received");
+    console.log("Googleverification request received");
     const { credential } = req.body;
 
     if (!credential) {
       console.log("No credential provided");
-      return res.status(400).json({ message: "No credential provided" });
+      return res
+        .status(400)
+        .json({ message: "logging No credential provided" });
     }
 
     console.log("Verifying Google token");

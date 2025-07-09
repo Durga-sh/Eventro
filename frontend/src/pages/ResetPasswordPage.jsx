@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useSearchParams, Link } from "react-router-dom";
-import { resetPassword, validateResetToken } from "../api/auth";
+import React, { useState } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { resetPassword } from "../api/auth";
 
 const ResetPasswordPage = () => {
   const [formData, setFormData] = useState({
@@ -8,39 +8,11 @@ const ResetPasswordPage = () => {
     confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [validatingToken, setValidatingToken] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [email, setEmail] = useState("");
-  const [isValidToken, setIsValidToken] = useState(false);
-
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const token = searchParams.get("token");
-
-  useEffect(() => {
-    if (!token) {
-      setError("Invalid reset link");
-      setValidatingToken(false);
-      return;
-    }
-
-    validateToken();
-  }, [token]);
-
-  const validateToken = async () => {
-    try {
-      setValidatingToken(true);
-      const response = await validateResetToken(token);
-      setIsValidToken(true);
-      setEmail(response.email);
-    } catch (err) {
-      setError(err.message || "Invalid or expired reset link");
-      setIsValidToken(false);
-    } finally {
-      setValidatingToken(false);
-    }
-  };
+  const location = useLocation();
+  const { tempResetId, email } = location.state || {};
 
   const handleChange = (e) => {
     setFormData({
@@ -69,7 +41,7 @@ const ResetPasswordPage = () => {
     setIsLoading(true);
 
     try {
-      await resetPassword(token, formData.newPassword);
+      await resetPassword(tempResetId, formData.newPassword);
       setSuccess(
         "Password reset successfully! You can now login with your new password."
       );
@@ -85,22 +57,7 @@ const ResetPasswordPage = () => {
     }
   };
 
-  if (validatingToken) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-        <div className="max-w-md w-full">
-          <div className="bg-slate-800 p-8 rounded-lg shadow-2xl border border-slate-700">
-            <div className="text-center">
-              <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-              <p className="text-gray-300">Validating reset link...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isValidToken) {
+  if (!tempResetId || !email) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
         <div className="max-w-md w-full">
@@ -122,15 +79,17 @@ const ResetPasswordPage = () => {
                 </svg>
               </div>
               <h2 className="text-xl font-semibold text-white mb-2">
-                Invalid Reset Link
+                Invalid Reset Session
               </h2>
-              <p className="text-gray-300 mb-6">{error}</p>
+              <p className="text-gray-300 mb-6">
+                Please request a new OTP to reset your password.
+              </p>
               <div className="space-y-3">
                 <Link
                   to="/forgot-password"
                   className="block w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-md transition-colors"
                 >
-                  Request New Reset Link
+                  Request New OTP
                 </Link>
                 <Link
                   to="/login"

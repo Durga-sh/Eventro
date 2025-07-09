@@ -102,7 +102,7 @@ export const login = async (credentials) => {
   }
 };
 
-// Forgot Password - Send reset email
+// Forgot Password - Send reset OTP
 export const forgotPassword = async (email) => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
@@ -116,7 +116,33 @@ export const forgotPassword = async (email) => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Failed to send reset email");
+      throw new Error(data.message || "Failed to send reset OTP");
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Verify Password Reset OTP
+export const verifyPasswordResetOTP = async (tempResetId, otp) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/auth/verify-password-reset-otp`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tempResetId, otp }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "OTP verification failed");
     }
 
     return data;
@@ -126,45 +152,20 @@ export const forgotPassword = async (email) => {
 };
 
 // Reset Password
-export const resetPassword = async (token, newPassword) => {
+export const resetPassword = async (tempResetId, newPassword) => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ token, newPassword }),
+      body: JSON.stringify({ tempResetId, newPassword }),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
       throw new Error(data.message || "Failed to reset password");
-    }
-
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-// Validate Reset Token
-export const validateResetToken = async (token) => {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/auth/validate-reset-token/${token}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Invalid or expired token");
     }
 
     return data;

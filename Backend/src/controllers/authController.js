@@ -15,7 +15,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-
 // Verify transporter configuration
 transporter.verify(function (error, success) {
   if (error) {
@@ -28,17 +27,12 @@ transporter.verify(function (error, success) {
 // Store temporary user data and OTP (in production, use Redis or database)
 const tempUsers = new Map();
 
-// Store password reset tokens (in production, use Redis or database)
-const passwordResetTokens = new Map();
+// Store password reset OTPs (in production, use Redis or database)
+const passwordResetOTPs = new Map();
 
 // Generate 6-digit OTP
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
-};
-
-// Generate password reset token
-const generateResetToken = () => {
-  return crypto.randomBytes(32).toString("hex");
 };
 
 // Send OTP email
@@ -46,41 +40,14 @@ const sendOTPEmail = async (email, otp) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: email,
-    subject: "EventHub - Email Verification OTP",
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #8B5CF6;">EventHub - Email Verification</h2>
-        <p>Your OTP for email verification is:</p>
-        <h1 style="background: #8B5CF6; color: white; padding: 20px; text-align: center; border-radius: 8px; letter-spacing: 4px;">${otp}</h1>
-        <p>This OTP will expire in 10 minutes.</p>
-        <p>If you didn't request this, please ignore this email.</p>
-      </div>
-    `,
-  };
-
-  await transporter.sendMail(mailOptions);
-};
-
-// Send password reset email
-const sendPasswordResetEmail = async (email, resetToken) => {
-  const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: "EventHub - Password Reset Request",
+    subject: "EventHub - Password Reset OTP",
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #8B5CF6;">EventHub - Password Reset</h2>
-        <p>You requested a password reset for your EventHub account.</p>
-        <p>Click the button below to reset your password:</p>
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${resetUrl}" style="background: #8B5CF6; color: white; padding: 15px 25px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold;">Reset Password</a>
-        </div>
-        <p>Or copy and paste this link into your browser:</p>
-        <p style="word-break: break-all; color: #6B7280;">${resetUrl}</p>
-        <p>This link will expire in 1 hour.</p>
-        <p>If you didn't request this password reset, please ignore this email.</p>
+        <p>Your OTP for password reset is:</p>
+        <h1 style="background: #8B5CF6; color: white; padding: 20px; text-align: center; border-radius: 8px; letter-spacing: 4px;">${otp}</h1>
+        <p>This OTP will expire in 10 minutes.</p>
+        <p>If you didn't request this, please ignore this email.</p>
       </div>
     `,
   };
@@ -223,7 +190,8 @@ exports.resendOTP = async (req, res) => {
   }
 };
 
-// Forgot Password - Send reset email
+// Forgot Password - Send OTP
+// Forgot Password - Send OTP
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -246,23 +214,27 @@ exports.forgotPassword = async (req, res) => {
         });
     }
 
-    // Generate reset token
-    const resetToken = generateResetToken();
+    // Generate OTP
+    const otp = generateOTP();
 
-    // Store reset token with expiry (1 hour)
-    passwordResetTokens.set(resetToken, {
+    // Store OTP with expiry (10 minutes)
+    const tempResetId = crypto.randomUUID();
+    passwordResetOTPs.set(tempResetId, {
       userId: user._id,
       email: user.email,
+      otp,
       createdAt: new Date(),
-      expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
     });
 
-    // Send password reset email
-    await sendPasswordResetEmail(email, resetToken);
+    // Send OTP email
+    console.log("Sending OTP email for password reset to:", email, "OTP:", otp);
+    await sendOTPEmail(email, otp);
 
     res.status(200).json({
       success: true,
-      message: "Password reset email sent successfully",
+      message: "Password reset OTP sent successfully",
+      tempResetId,
     });
   } catch (error) {
     console.error("Forgot password error:", error);
@@ -270,31 +242,67 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
+// Verify Password Reset OTP
+exports.verifyPasswordResetOTP = async (req, res) => {
+  try {
+    const { tempResetId, otp } = req.body;
+
+    // Get OTP data
+    const otpData = passwordResetOTPs.get(tempResetId);
+    if (!otpData) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired OTP session" });
+    }
+
+    // Check if OTP is expired
+    if (new Date() > otpData.expiresAt) {
+      passwordResetOTPs.delete(tempResetId);
+      return res
+        .status(400)
+        .json({ message: "OTP has expired. Please request a new one." });
+    }
+
+    // Verify OTP
+    if (otpData.otp !== otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "OTP verified successfully",
+      tempResetId,
+      email: otpData.email,
+    });
+  } catch (error) {
+    console.error("Verify password reset OTP error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 // Reset Password
 exports.resetPassword = async (req, res) => {
   try {
-    const { token, newPassword } = req.body;
+    const { tempResetId, newPassword } = req.body;
 
-    // Get reset token data
-    const tokenData = passwordResetTokens.get(token);
-    if (!tokenData) {
+    // Get OTP data
+    const otpData = passwordResetOTPs.get(tempResetId);
+    if (!otpData) {
       return res
         .status(400)
-        .json({ message: "Invalid or expired reset token" });
+        .json({ message: "Invalid or expired OTP session" });
     }
 
-    // Check if token is expired
-    if (new Date() > tokenData.expiresAt) {
-      passwordResetTokens.delete(token);
-      return res
-        .status(400)
-        .json({
-          message: "Reset token has expired. Please request a new one.",
-        });
+    // Check if OTP is expired
+    if (new Date() > otpData.expiresAt) {
+      passwordResetOTPs.delete(tempResetId);
+      return res.status(400).json({
+        message: "OTP has expired. Please request a new one.",
+      });
     }
 
     // Find user and update password
-    const user = await User.findById(tokenData.userId);
+    const user = await User.findById(otpData.userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -303,8 +311,8 @@ exports.resetPassword = async (req, res) => {
     user.password = newPassword;
     await user.save();
 
-    // Clean up reset token
-    passwordResetTokens.delete(token);
+    // Clean up OTP data
+    passwordResetOTPs.delete(tempResetId);
 
     res.status(200).json({
       success: true,
@@ -312,34 +320,6 @@ exports.resetPassword = async (req, res) => {
     });
   } catch (error) {
     console.error("Reset password error:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
-
-// Validate Reset Token
-exports.validateResetToken = async (req, res) => {
-  try {
-    const { token } = req.params;
-
-    // Get reset token data
-    const tokenData = passwordResetTokens.get(token);
-    if (!tokenData) {
-      return res.status(400).json({ message: "Invalid reset token" });
-    }
-
-    // Check if token is expired
-    if (new Date() > tokenData.expiresAt) {
-      passwordResetTokens.delete(token);
-      return res.status(400).json({ message: "Reset token has expired" });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Token is valid",
-      email: tokenData.email,
-    });
-  } catch (error) {
-    console.error("Validate reset token error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
