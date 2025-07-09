@@ -2,8 +2,7 @@
 
 import axios from "axios";
 
-const API_BASE_URL =
-  process.env.REACT_APP_API_URL ;
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 // Register user (Step 1: Send OTP)
 export const register = async (userData) => {
@@ -103,6 +102,77 @@ export const login = async (credentials) => {
   }
 };
 
+// Forgot Password - Send reset email
+export const forgotPassword = async (email) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to send reset email");
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Reset Password
+export const resetPassword = async (token, newPassword) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token, newPassword }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to reset password");
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Validate Reset Token
+export const validateResetToken = async (token) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/auth/validate-reset-token/${token}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Invalid or expired token");
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const googleLogin = async (credential) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/auth/google/verify`, {
@@ -150,5 +220,3 @@ export const getCurrentUser = async () => {
     throw error;
   }
 };
-
-

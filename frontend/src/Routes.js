@@ -13,6 +13,8 @@ import EditEventPage from "./pages/EditEventPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import MyTicketsPage from "./pages/MyTicketsPage";
 import TicketDetailPage from "./pages/TicketDetailPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import VerifyTicketPage from "./components/tickets/verifyTicketPage";
 
 // Protected Route Component
@@ -34,6 +36,8 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/events/:id" element={<EventDetailsPage />} />
       <Route
         path="/dashboard"

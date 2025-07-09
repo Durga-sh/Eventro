@@ -22,6 +22,11 @@ router.post("/resend-otp", authController.resendOTP);
 // Login route
 router.post("/login", authController.login);
 
+// Forgot Password routes
+router.post("/forgot-password", authController.forgotPassword);
+router.post("/reset-password", authController.resetPassword);
+router.get("/validate-reset-token/:token", authController.validateResetToken);
+
 // Google OAuth routes
 router.get(
   "/google",
