@@ -19,7 +19,7 @@ connectDB();
 // Middlewares
 app.use(
   cors({
-    origin: "https://eventro-ivory.vercel.app", // Your frontend URL
+    origin: "https://eventro-ivory.vercel.app/", // Your frontend URL
     credentials: true,
   })
 );
