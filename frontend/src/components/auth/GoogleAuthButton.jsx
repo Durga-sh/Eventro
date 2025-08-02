@@ -31,7 +31,7 @@ const GoogleAuthButton = () => {
       loginUser(response.user, response.token);
 
       // Redirect to dashboard
-      navigate("/dashboard");
+      navigate("/");
     } catch (error) {
       console.error("Google login error:", error);
       const errorMessage =

@@ -423,58 +423,6 @@ const UserDashboardPage = () => {
                 </Link>
               </motion.div>
             </motion.div>
-
-            <motion.div
-              variants={cardVariants}
-              whileHover="hover"
-              className="bg-slate-800 rounded-xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-purple-900/10 transition-all"
-            >
-              <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">
-                My Profile
-              </h3>
-              <p className="text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base">
-                {user
-                  ? "Update your personal information"
-                  : "Log in to manage your profile"}
-              </p>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link
-                  to={user ? "/profile" : "/login"}
-                  className="bg-slate-700 hover:bg-slate-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-md transition-colors inline-block text-sm sm:text-base"
-                >
-                  {user ? "View Profile" : "Log In"}
-                </Link>
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              variants={cardVariants}
-              whileHover="hover"
-              className="bg-slate-800 rounded-xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-purple-900/10 transition-all sm:col-span-2 lg:col-span-1"
-            >
-              <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">
-                Event Reports
-              </h3>
-              <p className="text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base">
-                {user?.role === "admin"
-                  ? "See analytics for your events"
-                  : "Log in as admin to view event reports"}
-              </p>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link
-                  to={user?.role === "admin" ? "/reports" : "/login"}
-                  className="bg-slate-700 hover:bg-slate-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-md transition-colors inline-block text-sm sm:text-base"
-                >
-                  {user?.role === "admin" ? "View Reports" : "Log In"}
-                </Link>
-              </motion.div>
-            </motion.div>
           </motion.div>
         </motion.div>
       </div>
