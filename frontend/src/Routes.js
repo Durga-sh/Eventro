@@ -5,7 +5,6 @@ import { useAuth } from "./hooks/useAuth";
 // Pages
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import HomePage from "./pages/HomePage";
 import UserDashboardPage from "./pages/UserDashboardpage";
 import CreateEventPage from "./pages/createEventPage";
 import EventDetailsPage from "./pages/EventDetailsPage";
@@ -33,20 +32,13 @@ const ProtectedRoute = ({ children }) => {
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      <Route path="/" element={<UserDashboardPage/>} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/events/:id" element={<EventDetailsPage />} />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <UserDashboardPage />
-          </ProtectedRoute>
-        }
-      />
+
       <Route
         path="/create-event"
         element={

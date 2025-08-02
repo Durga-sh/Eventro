@@ -32,19 +32,11 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:block">
             <ul className="flex items-center space-x-4 lg:space-x-8">
-              <li>
-                <Link
-                  to="/"
-                  className="text-gray-300 hover:text-white transition-colors text-sm lg:text-base"
-                >
-                  Home
-                </Link>
-              </li>
               {user ? (
                 <>
                   <li>
                     <Link
-                      to="/dashboard"
+                      to="/"
                       className="text-gray-300 hover:text-white transition-colors text-sm lg:text-base"
                     >
                       Dashboard
