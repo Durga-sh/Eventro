@@ -7,6 +7,7 @@ import { getTicketById } from "../api/tickets";
 import { formatDate } from "../utils/dateFormatter";
 import { formatPrice } from "../utils/priceFormatter";
 import TicketQRCode from "../components/tickets/TicketQRcode";
+import { BeamsBackground } from "../components/ui/beams-background";
 
 const TicketDetailPage = () => {
   const { id } = useParams();
@@ -62,8 +63,8 @@ const TicketDetailPage = () => {
   };
 
   return (
-    <div className="bg-slate-900 min-h-screen py-4 sm:py-6 lg:py-8 px-4">
-      <div className="container mx-auto max-w-4xl">
+    <BeamsBackground intensity="medium" className="bg-slate-900">
+      <div className="container mx-auto max-w-4xl py-4 sm:py-6 lg:py-8 px-4">
         <AnimatePresence mode="wait">
           {loading ? (
             <motion.div
@@ -471,7 +472,7 @@ const TicketDetailPage = () => {
           )}
         </AnimatePresence>
       </div>
-    </div>
+    </BeamsBackground>
   );
 };
 

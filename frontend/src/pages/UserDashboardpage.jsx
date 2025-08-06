@@ -6,6 +6,7 @@ import { useAuth } from "../hooks/useAuth";
 import { getAllEvents, getUserEvents } from "../api/events";
 import EventCard from "../components/events/EventCard";
 import { motion } from "framer-motion";
+import { BeamsBackground } from "../components/ui/beams-background";
 
 const UserDashboardPage = () => {
   const { user } = useAuth();
@@ -91,7 +92,7 @@ const UserDashboardPage = () => {
   };
 
   return (
-    <div className="bg-slate-900 min-h-screen">
+    <BeamsBackground intensity="medium" className="bg-slate-900">
       <div className="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -109,7 +110,6 @@ const UserDashboardPage = () => {
               >
                 EVENTS
               </motion.h1>
-            
             </div>
             {user?.role === "admin" && (
               <motion.div
@@ -383,11 +383,10 @@ const UserDashboardPage = () => {
             initial="hidden"
             animate="visible"
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
-          >
-          </motion.div>
+          ></motion.div>
         </motion.div>
       </div>
-    </div>
+    </BeamsBackground>
   );
 };
 

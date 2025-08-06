@@ -1,12 +1,9 @@
 import { HeroSection } from "../components/ui/hero";
 import { Card, CardContent } from "../components/ui/card";
-import { FeaturesSection } from "../components/ui/glowing-effect-demo";
 import { Button } from "../components/ui/button";
-import {
-  Star,
-  ArrowRight,
-} from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
+import { Star, ArrowRight } from "lucide-react";
+import { FeaturesSection } from "../components/ui/features-section";
 
 
 function StatsSection() {
@@ -103,6 +100,12 @@ function TestimonialsSection() {
 }
 
 function CTASection() {
+  const navigate = useNavigate();
+
+  const handleBookEvent = () => {
+    navigate("/events");
+  };
+
   return (
     <section className="py-20 bg-gradient-to-r from-purple-600 to-pink-600">
       <div className="container mx-auto px-4 text-center">
@@ -113,20 +116,14 @@ function CTASection() {
           Join thousands of event organizers who trust EVENTRO to manage their
           events seamlessly
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex justify-center">
           <Button
             size="lg"
-            className="bg-white text-purple-600 hover:bg-gray-100"
+            className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
+            onClick={handleBookEvent}
           >
-            Start Free Trial
+            Book Event
             <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-white text-white hover:bg-white hover:text-purple-600"
-          >
-            Schedule Demo
           </Button>
         </div>
       </div>
@@ -136,13 +133,14 @@ function CTASection() {
 
 export default function EventroLandingPage() {
   return (
-    <main className="bg-black">
-      <HeroSection />
-      <StatsSection />
-      <FeaturesSection/>
-      <TestimonialsSection />
-      <CTASection />
-
-    </main>
+    <>
+      <main className="bg-black">
+        <HeroSection />
+        <StatsSection />
+        <FeaturesSection />
+        <CTASection />
+      </main>
+ 
+    </>
   );
 }

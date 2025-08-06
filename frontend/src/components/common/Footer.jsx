@@ -15,10 +15,6 @@ const Footer = () => {
             <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-500 to-violet-400 bg-clip-text text-transparent mb-6">
               Eventro
             </h3>
-            <p className="text-gray-400 mb-6 text-lg">
-              Your platform for creating, managing, and discovering amazing
-              events.
-            </p>
             <div className="flex space-x-6">
               <a
                 href="#"
@@ -80,10 +76,10 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/dashboard"
+                  to="/events"
                   className="text-gray-400 hover:text-purple-400 transition-colors text-lg"
                 >
-                  Dashboard
+                  Browse Events
                 </Link>
               </li>
               {isAdmin && (
@@ -109,11 +105,41 @@ const Footer = () => {
 
           <div className="footer-section">
             <h3 className="text-white font-semibold mb-6 text-xl">Contact</h3>
-            <div className="space-y-3">
-              <p className="flex items-center text-gray-400 text-lg">
+            <div className="space-y-4">
+              <div className="flex items-start text-gray-400 text-lg">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 mr-3 text-purple-400"
+                  className="h-6 w-6 mr-3 text-purple-400 mt-1 flex-shrink-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                <div>
+                  <p>123 Innovation Street,</p>
+                  <p>Tech District, Bangalore</p>
+                  <p>Karnataka 560001, India</p>
+                </div>
+              </div>
+              <a
+                href="mailto:puhandurgsankarp@gmail.com"
+                className="flex items-center text-gray-400 hover:text-purple-400 transition-colors text-lg group"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 mr-3 text-purple-400 group-hover:text-purple-300"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -126,11 +152,14 @@ const Footer = () => {
                   />
                 </svg>
                 puhandurgsankarp@gmail.com
-              </p>
-              <p className="flex items-center text-gray-400 text-lg">
+              </a>
+              <a
+                href="tel:+917205888273"
+                className="flex items-center text-gray-400 hover:text-purple-400 transition-colors text-lg group"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 mr-3 text-purple-400"
+                  className="h-6 w-6 mr-3 text-purple-400 group-hover:text-purple-300"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -143,14 +172,32 @@ const Footer = () => {
                   />
                 </svg>
                 +91 72058882737
-              </p>
+              </a>
+              <div className="flex items-center text-gray-400 text-lg">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 mr-3 text-purple-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                Mon - Fri: 9AM - 6PM IST
+              </div>
             </div>
           </div>
         </div>
 
         <div className="border-t border-slate-800 pt-8 text-center">
           <p className="text-gray-500 text-lg">
-            &copy; {currentYear} EventHub. All rights reserved.
+            &copy; {currentYear} Eventro. All rights reserved. | Empowering
+            Events, Connecting Communities
           </p>
         </div>
       </div>

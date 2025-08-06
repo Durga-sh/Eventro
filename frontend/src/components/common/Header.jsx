@@ -4,6 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useState } from "react";
 
 const Header = () => {
+  // Destructuring user and logoutUser from useAuth hook
   const { user, logoutUser } = useAuth();
   const isAdmin = user && user.role === "admin";
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -30,7 +31,7 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:block">
+          <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
             <ul className="flex items-center space-x-4 lg:space-x-8">
               <li>
                 <Link
