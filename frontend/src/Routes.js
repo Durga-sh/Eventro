@@ -15,6 +15,7 @@ import TicketDetailPage from "./pages/TicketDetailPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import VerifyTicketPage from "./components/tickets/verifyTicketPage";
+import EventroLandingPage from "./pages/page";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -32,7 +33,8 @@ const ProtectedRoute = ({ children }) => {
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<UserDashboardPage/>} />
+      <Route path="/" element={<EventroLandingPage/>} />
+      <Route path="/events" element={<UserDashboardPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />

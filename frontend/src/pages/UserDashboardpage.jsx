@@ -107,17 +107,9 @@ const UserDashboardPage = () => {
                 transition={{ delay: 0.2 }}
                 className="text-2xl sm:text-3xl font-bold text-white"
               >
-                Dashboard
+                EVENTS
               </motion.h1>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="text-gray-400 text-base sm:text-lg truncate"
-              >
-                Welcome{user ? `, ${user.name || "User"}` : " to the Dashboard"}
-                !
-              </motion.p>
+            
             </div>
             {user?.role === "admin" && (
               <motion.div
@@ -386,43 +378,12 @@ const UserDashboardPage = () => {
           transition={{ delay: 0.4 }}
           className="mb-8 lg:mb-12"
         >
-          <motion.h2
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-            className="text-xl sm:text-2xl font-bold text-white mb-6 lg:mb-8"
-          >
-            Quick Actions
-          </motion.h2>
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
           >
-            <motion.div
-              variants={cardVariants}
-              whileHover="hover"
-              className="bg-slate-800 rounded-xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-purple-900/10 transition-all"
-            >
-              <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">
-                Browse Events
-              </h3>
-              <p className="text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base">
-                Discover upcoming events in your area
-              </p>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link
-                  to="/events"
-                  className="bg-slate-700 hover:bg-slate-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-md transition-colors inline-block text-sm sm:text-base"
-                >
-                  Browse
-                </Link>
-              </motion.div>
-            </motion.div>
           </motion.div>
         </motion.div>
       </div>

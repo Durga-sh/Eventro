@@ -32,6 +32,14 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:block">
             <ul className="flex items-center space-x-4 lg:space-x-8">
+              <li>
+                <Link
+                  to="/events"
+                  className="text-gray-300 hover:text-white transition-colors text-sm lg:text-base"
+                >
+                  Events
+                </Link>
+              </li>
               {user ? (
                 <>
                   <li>
@@ -169,6 +177,13 @@ const Header = () => {
                 className="block px-3 py-2.5 text-gray-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors text-base"
               >
                 Home
+              </Link>
+              <Link
+                to="/events"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block px-3 py-2.5 text-gray-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors text-base"
+              >
+                Events
               </Link>
               {user ? (
                 <>
