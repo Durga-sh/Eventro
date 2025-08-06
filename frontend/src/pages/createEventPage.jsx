@@ -2,6 +2,7 @@ import React from "react";
 import EventForm from "../components/events/EventForm";
 import { useAuth } from "../hooks/useAuth";
 import { Navigate } from "react-router-dom";
+import { BeamsBackground } from "../components/ui/beams-background";
 
 const CreateEventPage = () => {
   const { isAuthenticated } = useAuth();
@@ -12,10 +13,11 @@ const CreateEventPage = () => {
   }
 
   return (
-    <div className="create-event-page">
- 
-      <EventForm />
-    </div>
+    <BeamsBackground intensity="medium" className="bg-slate-900">
+      <div className="create-event-page">
+        <EventForm />
+      </div>
+    </BeamsBackground>
   );
 };
 

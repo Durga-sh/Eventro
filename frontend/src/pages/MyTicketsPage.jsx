@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import { getUserTickets } from "../api/tickets";
 import TicketList from "../components/tickets/TicketList";
 import { motion } from "framer-motion";
+import { BeamsBackground } from "../components/ui/beams-background";
 
 const MyTicketsPage = () => {
   const [tickets, setTickets] = useState([]);
@@ -52,12 +53,7 @@ const MyTicketsPage = () => {
   };
 
   return (
-    <motion.div
-      className="bg-slate-900 min-h-screen"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
+    <BeamsBackground intensity="medium" className="bg-slate-900">
       <motion.div
         className="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8"
         variants={containerVariants}
@@ -189,7 +185,7 @@ const MyTicketsPage = () => {
           </motion.div>
         )}
       </motion.div>
-    </motion.div>
+    </BeamsBackground>
   );
 };
 
