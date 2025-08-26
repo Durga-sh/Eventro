@@ -4,7 +4,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AuthProvider } from "./context/AuthContext";
 import AppRoutes from "./Routes";
-import Header from "./components/common/Header";
+// import Header from "./components/common/Header";
+import { Navbar } from "./components/common/Navbar";
 import Footer from "./components/common/Footer";
 import "./App.css";
 
@@ -21,7 +22,7 @@ function App() {
       <AuthProvider>
         <Router>
           <div className="app">
-            <Header />
+            <Navbar/>
             <main className="main-content">
               <AppRoutes />
             </main>
