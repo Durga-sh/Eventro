@@ -18,26 +18,23 @@ const StatsSection = memo(() => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-b from-black to-gray-900 relative overflow-hidden">
-      {/* Background decoration */}
+    <section className="py-20 bg-gradient-to-b from-black to-gray-900 relative">
+      {/* Simplified background decoration - removed blur animations */}
       <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-violet-500/5"></div>
-      <div className="absolute top-0 left-1/4 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-violet-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute top-0 left-1/4 w-72 h-72 bg-purple-500/8 rounded-full blur-2xl opacity-50"></div>
+      <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-violet-500/8 rounded-full blur-2xl opacity-50"></div>
 
       <div className="container mx-auto px-4 relative">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           {stats.map((stat, index) => (
-            <div
-              key={index}
-              className="text-center group hover:scale-105 transition-transform duration-300"
-            >
+            <div key={index} className="text-center group">
               <div className="relative">
-                <div className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-purple-400 via-violet-400 to-purple-500 bg-clip-text text-transparent mb-4 group-hover:from-purple-300 group-hover:to-violet-300 transition-all duration-300">
+                <div className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-purple-400 via-violet-400 to-purple-500 bg-clip-text text-transparent mb-4 will-change-transform">
                   {stat.number}
                 </div>
-                <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/10 to-violet-500/10 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               </div>
-              <div className="text-lg md:text-xl text-gray-400 font-medium group-hover:text-gray-300 transition-colors duration-300">
+              <div className="text-lg md:text-xl text-gray-400 font-medium">
                 {stat.label}
               </div>
             </div>
@@ -50,7 +47,6 @@ const StatsSection = memo(() => {
 
 StatsSection.displayName = "StatsSection";
 
-// New testimonials section for better engagement
 const TestimonialsSection = memo(() => {
   const testimonials = [
     {
@@ -83,7 +79,7 @@ const TestimonialsSection = memo(() => {
   ];
 
   return (
-    <section className="py-20 bg-gray-900 relative overflow-hidden">
+    <section className="py-20 bg-gray-900 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-slate-900 to-gray-900"></div>
       <div className="container mx-auto px-4 relative">
         <div className="text-center mb-16">
@@ -104,7 +100,7 @@ const TestimonialsSection = memo(() => {
           {testimonials.map((testimonial, index) => (
             <Card
               key={index}
-              className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm hover:bg-slate-800/70 transition-all duration-300 group"
+              className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm will-change-transform"
             >
               <CardContent className="p-6">
                 <div className="flex items-center mb-4">
@@ -147,16 +143,15 @@ const TestimonialsSection = memo(() => {
 
 TestimonialsSection.displayName = "TestimonialsSection";
 
-// CTA Section
 const CTASection = memo(() => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-20 bg-gradient-to-r from-purple-900 via-violet-900 to-purple-900 relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-r from-purple-900 via-violet-900 to-purple-900 relative">
       <div className="absolute inset-0 bg-black/20"></div>
       <div className="absolute top-0 left-0 w-full h-full">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/15 rounded-full blur-3xl opacity-60"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-500/15 rounded-full blur-3xl opacity-60"></div>
       </div>
 
       <div className="container mx-auto px-4 text-center relative">
@@ -170,15 +165,15 @@ const CTASection = memo(() => {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button
             onClick={() => navigate("/register")}
-            className="bg-white text-purple-900 hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 group"
+            className="bg-white text-purple-900 hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-full shadow-xl will-change-transform"
           >
             Get Started Free
-            <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
           <Button
             onClick={() => navigate("/events")}
             variant="outline"
-            className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg font-semibold rounded-full backdrop-blur-sm transition-all duration-300"
+            className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg font-semibold rounded-full backdrop-blur-sm will-change-transform"
           >
             Browse Events
           </Button>
@@ -204,6 +199,27 @@ CTASection.displayName = "CTASection";
 export default function EventroLandingPage() {
   return (
     <main className="bg-black overflow-x-hidden">
+      {/* Minimal CSS for performance optimization only */}
+      <style jsx>{`
+        section {
+          transform: translateZ(0);
+          backface-visibility: hidden;
+        }
+
+        .will-change-transform {
+          will-change: transform;
+        }
+
+        /* Reduce motion for users who prefer it */
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+      `}</style>
+
       <HeroSection />
       <StatsSection />
       <Logos3 />

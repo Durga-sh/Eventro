@@ -9,10 +9,14 @@ const Spline = lazy(() => import("@splinetool/react-spline"));
 function HeroSplineBackground() {
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden">
-      <Spline
-        className="w-full h-full object-cover"
-        scene="https://prod.spline.design/us3ALejTXl6usHZ7/scene.splinecode"
-      />
+      <div className="relative w-full h-full">
+        <Spline
+          className="w-full h-full object-cover"
+          scene="https://prod.spline.design/us3ALejTXl6usHZ7/scene.splinecode"
+        />
+        {/* Cover specifically for the "Built with Spline" text in bottom-right corner */}
+        <div className="absolute bottom-0 right-0 w-48 h-12 bg-black z-10" />
+      </div>
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-black/80" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/90" />
     </div>

@@ -9,7 +9,7 @@ export function Navbar() {
   const [hoveredNavItem, setHoveredNavItem] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
+  const [expandedMobileDropdown, setExpandedMobileDropdown] = useState(null);
 
   const handleScroll = useCallback(() => {
     const isScrolled = window.scrollY > 50;
@@ -34,6 +34,7 @@ export function Navbar() {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+    setExpandedMobileDropdown(null);
     document.body.style.overflow = "unset";
   };
 
@@ -49,13 +50,19 @@ export function Navbar() {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
+      setExpandedMobileDropdown(null);
     }
+  };
+
+  const toggleMobileDropdown = (item) => {
+    setExpandedMobileDropdown(expandedMobileDropdown === item ? null : item);
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isMobileMenuOpen && !event.target.closest("nav")) {
         setIsMobileMenuOpen(false);
+        setExpandedMobileDropdown(null);
         document.body.style.overflow = "unset";
       }
     };
@@ -63,6 +70,7 @@ export function Navbar() {
     const handleEscape = (event) => {
       if (event.key === "Escape" && isMobileMenuOpen) {
         setIsMobileMenuOpen(false);
+        setExpandedMobileDropdown(null);
         document.body.style.overflow = "unset";
       }
     };
@@ -119,7 +127,6 @@ export function Navbar() {
             </Link>
           </div>
 
-       
           <div className="hidden lg:flex items-center space-x-8">
             <div className="relative group">
               <Link
@@ -276,19 +283,18 @@ export function Navbar() {
           </div>
           {!user && (
             <div className="flex items-center space-x-2 md:space-x-4">
-    
               <Link
                 to="/login"
                 className="hidden md:block text-gray-300 hover:text-white text-sm font-medium transition-colors"
               >
                 Sign In
               </Link>
+              {/* Hide Join button on mobile, show on md and above */}
               <Link
                 to="/register"
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-2 px-4 md:py-2.5 md:px-6 rounded-full text-xs md:text-sm transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="hidden md:block bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-2 px-4 md:py-2.5 md:px-6 rounded-full text-xs md:text-sm transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                <span className="hidden sm:inline">Get Started</span>
-                <span className="sm:hidden">Join</span>
+                Get Started
               </Link>
 
               {/* Mobile menu button */}
@@ -378,17 +384,90 @@ export function Navbar() {
             {/* Public navigation for non-authenticated users */}
             {!user && (
               <>
-                {["Features", "Solutions", "Resources", "Pricing"].map(
-                  (item) => (
+                {["Features", "Solutions"].map((item) => (
+                  <div key={item} className="space-y-2">
                     <button
-                      key={item}
-                      className="block w-full text-left text-gray-200 hover:text-white text-base md:text-lg font-medium py-2 md:py-3 px-2 rounded-lg hover:bg-white/10 transition-all duration-200"
-                      onClick={closeMobileMenu}
+                      className="flex items-center justify-between w-full text-left text-gray-200 hover:text-white text-base md:text-lg font-medium py-2 md:py-3 px-2 rounded-lg hover:bg-white/10 transition-all duration-200"
+                      onClick={() => toggleMobileDropdown(item.toLowerCase())}
                     >
                       {item}
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          expandedMobileDropdown === item.toLowerCase()
+                            ? "rotate-180"
+                            : ""
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
                     </button>
-                  )
-                )}
+
+                    {/* Mobile dropdown content */}
+                    <div
+                      className={`ml-4 space-y-2 overflow-hidden transition-all duration-200 ${
+                        expandedMobileDropdown === item.toLowerCase()
+                          ? "max-h-96 opacity-100"
+                          : "max-h-0 opacity-0"
+                      }`}
+                    >
+                      {item === "Features" && (
+                        <>
+                          <MobileDropdownItem
+                            text="Event Creation"
+                            onClick={closeMobileMenu}
+                          />
+                          <MobileDropdownItem
+                            text="Ticket Booking"
+                            onClick={closeMobileMenu}
+                          />
+                          <MobileDropdownItem
+                            text="QR Code System"
+                            onClick={closeMobileMenu}
+                          />
+                          <MobileDropdownItem
+                            text="Payment Integration"
+                            onClick={closeMobileMenu}
+                          />
+                        </>
+                      )}
+                      {item === "Solutions" && (
+                        <>
+                          <MobileDropdownItem
+                            text="Corporate Events"
+                            onClick={closeMobileMenu}
+                          />
+                          <MobileDropdownItem
+                            text="Conferences"
+                            onClick={closeMobileMenu}
+                          />
+                          <MobileDropdownItem
+                            text="Workshops"
+                            onClick={closeMobileMenu}
+                          />
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                {["Resources", "Pricing"].map((item) => (
+                  <button
+                    key={item}
+                    className="block w-full text-left text-gray-200 hover:text-white text-base md:text-lg font-medium py-2 md:py-3 px-2 rounded-lg hover:bg-white/10 transition-all duration-200"
+                    onClick={closeMobileMenu}
+                  >
+                    {item}
+                  </button>
+                ))}
+
                 <div className="pt-3 md:pt-4 border-t border-white/10 space-y-3 md:space-y-4">
                   <button
                     className="block w-full text-left text-gray-200 hover:text-white text-base md:text-lg font-medium py-2 md:py-3 px-2 rounded-lg hover:bg-white/10 transition-all duration-200"
@@ -494,5 +573,16 @@ function DropdownItem({ href, text }) {
     >
       {text}
     </a>
+  );
+}
+
+function MobileDropdownItem({ text, onClick }) {
+  return (
+    <button
+      className="block w-full text-left text-gray-300 hover:text-white text-sm md:text-base py-2 px-3 rounded-lg hover:bg-white/5 transition-all duration-150"
+      onClick={onClick}
+    >
+      {text}
+    </button>
   );
 }
