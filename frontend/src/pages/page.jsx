@@ -1,3 +1,5 @@
+"use client";
+
 import { HeroSection } from "../components/ui/hero";
 import { Card, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
@@ -5,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { Star, ArrowRight } from "lucide-react";
 import { FeaturesSection } from "../components/ui/features-section";
 import { memo } from "react";
+import { Logos3 } from "../components/ui/logos3";
 
-// Memoized StatsSection for better performance
 const StatsSection = memo(() => {
   const stats = [
     { number: "10K+", label: "Events Created" },
@@ -23,18 +25,6 @@ const StatsSection = memo(() => {
       <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-violet-500/10 rounded-full blur-3xl"></div>
 
       <div className="container mx-auto px-4 relative">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Trusted by{" "}
-            <span className="bg-gradient-to-r from-purple-400 to-violet-400 bg-clip-text text-transparent">
-              thousands
-            </span>
-          </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Join the growing community of event organizers who trust Eventro
-          </p>
-        </div>
-
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           {stats.map((stat, index) => (
             <div
@@ -211,14 +201,13 @@ const CTASection = memo(() => {
 
 CTASection.displayName = "CTASection";
 
-// Main component with performance optimizations
 export default function EventroLandingPage() {
   return (
     <main className="bg-black overflow-x-hidden">
       <HeroSection />
       <StatsSection />
+      <Logos3 />
       <FeaturesSection />
-      <TestimonialsSection />
     </main>
   );
 }

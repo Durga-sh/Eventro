@@ -18,6 +18,10 @@ module.exports = {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
+        backgroundImage: {
+          "linear-to-r": "linear-gradient(to right, var(--tw-gradient-stops))",
+          "linear-to-l": "linear-gradient(to left, var(--tw-gradient-stops))",
+        },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
