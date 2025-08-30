@@ -47,21 +47,6 @@ function HeroContent() {
             Start Booking Events
             <ArrowRight className="inline-block ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
           </button>
-          <button className="group bg-white/10 backdrop-blur-md border border-white/20 hover:border-white/40 text-white hover:text-white font-medium py-4 px-8 rounded-2xl transition-all duration-300 flex items-center justify-center w-full sm:w-auto hover:bg-white/20">
-            <svg
-              className="w-5 h-5 mr-2 transition-transform group-hover:scale-110"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Watch Demo
-          </button>
         </div>
       </div>
     </div>

@@ -3,7 +3,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
-// Enhanced Navbar component with Header functionality
 export function Navbar() {
   const { user, logoutUser } = useAuth();
   const isAdmin = user && user.role === "admin";
@@ -11,7 +10,7 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Optimized scroll handler with throttling
+
   const handleScroll = useCallback(() => {
     const isScrolled = window.scrollY > 50;
     setScrolled(isScrolled);
@@ -45,7 +44,7 @@ export function Navbar() {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-    // Prevent body scroll when mobile menu is open
+
     if (!isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -53,7 +52,6 @@ export function Navbar() {
     }
   };
 
-  // Close mobile menu when clicking outside or on escape
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isMobileMenuOpen && !event.target.closest("nav")) {
@@ -121,9 +119,8 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
+       
           <div className="hidden lg:flex items-center space-x-8">
-            {/* Always show Events link */}
             <div className="relative group">
               <Link
                 to="/events"
@@ -198,7 +195,6 @@ export function Navbar() {
               </>
             )}
 
-            {/* Authenticated user navigation items */}
             {user && (
               <>
                 <div className="relative group">
@@ -278,16 +274,9 @@ export function Navbar() {
               </>
             )}
           </div>
-
-          {/* Right side buttons for non-authenticated users */}
           {!user && (
             <div className="flex items-center space-x-2 md:space-x-4">
-              <a
-                href="#"
-                className="hidden lg:block text-gray-300 hover:text-white text-sm font-medium transition-colors"
-              >
-                Contact Sales
-              </a>
+    
               <Link
                 to="/login"
                 className="hidden md:block text-gray-300 hover:text-white text-sm font-medium transition-colors"

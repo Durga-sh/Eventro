@@ -12,49 +12,49 @@ const Logos3 = memo(
         id: "logo-1",
         description: "Eventbrite",
         image: "/brand-eventbrite.svg",
-        className: "h-36 w-auto max-w-[250px]",
+        className: "h-48 w-auto max-w-[300px]",
       },
       {
         id: "logo-2",
         description: "TED",
         image: "/brand-ted.svg",
-        className: "h-36 w-auto max-w-[250px]",
+        className: "h-48 w-auto max-w-[300px]",
       },
       {
         id: "logo-3",
         description: "Meetup",
         image: "/brand-meetup.svg",
-        className: "h-36 w-auto max-w-[250px]",
+        className: "h-48 w-auto max-w-[300px]",
       },
       {
         id: "logo-4",
         description: "Ticketmaster",
         image: "/brand-ticketmaster.svg",
-        className: "h-36 w-auto max-w-[250px]",
+        className: "h-48 w-auto max-w-[300px]",
       },
       {
         id: "logo-5",
         description: "Web Summit",
         image: "/brand-websummit.svg",
-        className: "h-36 w-auto max-w-[250px]",
+        className: "h-48 w-auto max-w-[300px]",
       },
       {
         id: "logo-6",
         description: "Spotify",
         image: "/brand-spotify.svg",
-        className: "h-36 w-auto max-w-[250px]",
+        className: "h-48 w-auto max-w-[300px]",
       },
       {
         id: "logo-7",
         description: "YouTube",
         image: "/brand-youtube.svg",
-        className: "h-36 w-auto max-w-[250px]",
+        className: "h-48 w-auto max-w-[300px]",
       },
       {
         id: "logo-8",
         description: "Airbnb",
         image: "/brand-airbnb.svg",
-        className: "h-36 w-auto max-w-[250px]",
+        className: "h-48 w-auto max-w-[300px]",
       },
     ],
   }) => {
@@ -95,13 +95,13 @@ const Logos3 = memo(
                 ]}
                 className="w-full"
               >
-                <CarouselContent className="-ml-8">
+                <CarouselContent className="flex">
                   {[...logos, ...logos].map((logo, index) => (
                     <CarouselItem
                       key={`${logo.id}-${index}`}
-                      className="pl-8 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
+                      className="flex-none pr-8"
                     >
-                      <div className="flex items-center justify-center h-40 w-full group cursor-pointer">
+                      <div className="flex items-center justify-center h-56 w-[300px] group cursor-pointer">
                         <img
                           src={logo.image}
                           alt={`${logo.description} logo`}
