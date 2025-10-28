@@ -2,6 +2,95 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Enhanced Smooth Scrolling with Performance */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 2rem;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+* {
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Better momentum scrolling for mobile */
+.scroll-container {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Performance optimization with hardware acceleration */
+section, div {
+  contain: layout style;
+  will-change: auto;
+}
+
+/* GPU acceleration for smooth animations */
+.gpu-accelerated {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Optimized blur effects */
+.blur-light {
+  filter: blur(4px);
+  transform: translate3d(0, 0, 0);
+}
+
+.blur-medium {
+  filter: blur(8px);
+  transform: translate3d(0, 0, 0);
+}
+
+/* Smooth scroll with momentum */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+}
+
+/* Enhanced scroll performance */
+section {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Smooth transitions for all elements */
+* {
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Hardware acceleration for animations */
+.will-change-transform,
+.transform,
+[class*="animate-"] {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Better scroll snap for sections */
+main {
+  scroll-snap-type: y proximity;
+}
+
+section {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
 /* Hide Spline watermark */
 canvas + a[href*="spline.design"],
 canvas + div a[href*="spline.design"],
@@ -10,4 +99,18 @@ a[href*="spline.design"] {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
+}
+
+/* Custom smooth scroll for webkit browsers */
+@supports (scroll-behavior: smooth) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Fallback for browsers without smooth scroll */
+@supports not (scroll-behavior: smooth) {
+  html {
+    scroll-behavior: auto;
+  }
 }

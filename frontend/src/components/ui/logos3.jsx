@@ -3,6 +3,7 @@
 import AutoScroll from "embla-carousel-auto-scroll";
 import { memo } from "react";
 import { Carousel, CarouselContent, CarouselItem } from "./carousel";
+import { useInViewAnimation } from "../../hooks/useScrollAnimation";
 
 const Logos3 = memo(
   ({
@@ -58,16 +59,24 @@ const Logos3 = memo(
       },
     ],
   }) => {
+    const [ref, isInView] = useInViewAnimation(0.2);
+
     return (
-      <section className="py-20 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
+      <section ref={ref} className="py-20 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-violet-500/5"></div>
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className={`absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-medium transition-all duration-700 gpu-accelerated ${
+          isInView ? 'opacity-100 animate-pulse' : 'opacity-0'
+        }`}></div>
+        <div className={`absolute bottom-0 right-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-medium transition-all duration-700 delay-200 gpu-accelerated ${
+          isInView ? 'opacity-100 animate-pulse' : 'opacity-0'
+        }`}></div>
 
         <div className="container mx-auto px-6 relative">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
+          <div className={`text-center mb-16 transition-all duration-800 animate-slide-in-scale ${
+            isInView ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-8'
+          }`}>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 bg-gradient-to-r from-white via-purple-200 to-white bg-clip-text text-transparent animate-shimmer">
               {heading}
             </h2>
             <p className="text-lg md:text-xl text-gray-400 max-w-4xl mx-auto leading-relaxed">
@@ -77,7 +86,9 @@ const Logos3 = memo(
           </div>
 
           {/* Logos Carousel */}
-          <div className="relative">
+          <div className={`relative transition-all duration-700 delay-300 gpu-accelerated ${
+            isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          }`}>
             <div className="overflow-hidden">
               <Carousel
                 opts={{
@@ -101,11 +112,14 @@ const Logos3 = memo(
                       key={`${logo.id}-${index}`}
                       className="flex-none pr-8"
                     >
-                      <div className="flex items-center justify-center h-56 w-[300px] group cursor-pointer">
+                      <div className="flex items-center justify-center h-56 w-[300px] group cursor-pointer relative overflow-hidden">
+                        {/* Animated background on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-violet-500/10 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-lg animate-shimmer"></div>
+                        
                         <img
                           src={logo.image}
                           alt={`${logo.description} logo`}
-                          className={`${logo.className} opacity-60 group-hover:opacity-100 transition-all duration-500 filter brightness-90 group-hover:brightness-110 group-hover:scale-110 max-w-full max-h-full object-contain`}
+                          className={`${logo.className} opacity-60 group-hover:opacity-100 transition-all duration-500 filter brightness-90 group-hover:brightness-110 group-hover:scale-110 max-w-full max-h-full object-contain relative z-10 group-hover:animate-float`}
                           loading="lazy"
                           onError={(e) => {
                             e.target.src = "/placeholder-ou0xv.png";
